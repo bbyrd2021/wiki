@@ -3,7 +3,7 @@ type: project
 title: "ROAD_Reason — Logic-Constrained Scene Reasoning"
 aliases: ["ROAD_Reason", "ROAD Reason"]
 created: 2026-04-07
-updated: 2026-04-07
+updated: 2026-04-20
 sources:
   - "ROAD_Reason/docs/CLAUDE.md"
   - "ROAD_Reason/docs/APPROACHES.md"
@@ -104,14 +104,28 @@ See [[methods/multimodal-causal-driving|Full Architecture Spec]] for module-by-m
 - T-norm constraints on future predictions — unexplored
 - Anomaly detection via surprise in latent predictions
 
+## Experiment Status
+
+| Experiment | Description | Status | Best result |
+|------------|-------------|--------|-------------|
+| Exp1 | Frozen ViT + GT boxes + BCE + Łukasiewicz t-norm | Complete (ep6) | action mAP=22.2%, duplex=12.3%, triplet=8.8% |
+| **Exp1b** | **LoRA + FCOS dense detection + focal loss + Gödel t-norm** | **Complete (ep15, Apr 20)** | agent=60.6%, action=32.4%, loc=50.0%, duplex=23.1%, triplet=17.5% (macro-mAP, fg tokens) |
+
+**Exp1b** redesigns Exp1 from oracle-box classification to paper-analogous FCOS dense detection: every spatial ViT token predicts agentness + box + labels; no GT boxes needed at inference. Agentness is a real learned score (replaces hardcoded 1.0). See [[findings/exp1b-fcos-detection|Exp1b design page]] for full architecture, loss breakdown, and expected results.
+
 ## Running
 
 ```bash
-# Experiment 1 — Qwen2.5-VL on ROAD-R (primary)
-python experiments/exp1_road_r/train.py
-python experiments/exp1_road_r/train.py --model Qwen/Qwen2.5-VL-3B-Instruct  # lighter
+# Experiment 1b — FCOS dense detection (current)
+cd /data/repos/ROAD_Reason
+python -u experiments/exp1b_road_r/train.py
+python -u experiments/exp1b_road_r/eval.py --out experiments/exp1b_road_r/logs/eval_results.json
 
-# SmolVLM baselines (reference only; superseded by Exp 1)
+# Experiment 1 — oracle-box classification (complete)
+python experiments/exp1_road_r/train.py
+python experiments/exp1_road_r/eval.py
+
+# SmolVLM baselines (reference only)
 python baseline/smolvlm_constrained.py
 
 # Dataset analysis

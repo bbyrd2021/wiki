@@ -8,6 +8,23 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 
 ---
 
+## [2026-04-17] INGEST — Exp1b FCOS Dense Detection Design
+- Pages created: 1 (`findings/exp1b-fcos-detection.md`) | Pages updated: 2 (`projects/road-reason.md`, `index.md`)
+- Summary: Documented full Exp1b experiment design — FCOS-style dense detection replacing oracle-box Exp1 pipeline. Covers architecture (DetectionHeads, 7 sub-heads), FCOS token assignment, 4-term loss (agentness focal + box SmoothL1 + classification focal + Gödel t-norm), training config, warm-start strategy, first clip training log, and expected comparisons against Exp1 and 3D-RetinaNet baseline. Training started 2026-04-17, in progress.
+
+## [2026-04-16] PROJECT — Experiment 1b design and implementation
+
+- Pages created: 0  |  Pages updated: 0  |  Code written: 5 new files
+- Designed and implemented Exp1b at `/data/repos/ROAD_Reason/experiments/exp1b_road_r/`
+- Changes from Exp1: focal loss (γ=2, dynamic per-class α), LoRA on first 8 ViT blocks (r=8), Gödel t-norm (λ=1.0), two optimizer param groups, best checkpoint by action macro-mAP
+- Warm-starts from Exp1 best.pt (epoch 6); LoRA added after weight loading to preserve base weights
+- Files: `config.py`, `losses.py` (FocalLoss + compute_class_alphas), `model.py` (LoRA via peft), `train.py` (two param groups + mAP criterion), `eval.py` (LoRA-aware)
+- Import sanity check passed: all modules resolve correctly
+
+## [2026-04-16] INGEST — Exp1 Evaluation Results
+- Pages created: 1 (`findings/exp1-vs-retinanet-baseline.md`) | Pages updated: 1 (`index.md`)
+- Summary: Filed Exp1 (Qwen2.5-VL, epoch 6 best.pt) eval results against locally-replicated 3D-RetinaNet-I3D baseline. Key findings: Qwen stronger on agent/action/loc with GT boxes but weaker on duplex/triplet; t-norm negligible in both models; class imbalance root cause for rare action F1≈0.
+
 ## [2026-04-14] UPDATE — Repo organization: README landing pages + .gitignore for Intelligent_AutoDrive
 
 - Files created: `ROAD_Reason/README.md` (overwrite — full landing page), `ROAD_Reason/.gitignore`, `AutoDrivePerception2026/README.md`
@@ -272,3 +289,8 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
   warm-starts heads for Experiment 1b
 - Added Experiment 1b entry: detection head added on top of Exp 1 checkpoint
 - Documented Option B (joint from scratch) and when it becomes appropriate
+
+## [2026-04-20] INGEST — Exp1b Eval Results
+
+- Pages updated: 3 (findings/exp1b-fcos-detection.md, projects/road-reason.md, index.md)
+- Summary: Exp1b FCOS dense detection training (15 epochs) complete. Final eval: agent=60.6%, action=32.4%, loc=50.0%, duplex=23.1%, triplet=17.5% macro-mAP on fg tokens. Beats Exp1 oracle-box on all 5 heads. Constraint violation rate=0.29%. Model still improving at epoch 15 — no convergence plateau. Next step: tube linking for ECCV-comparable f-mAP / v-mAP.

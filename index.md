@@ -1,7 +1,7 @@
 ---
 type: index
-updated: 2026-04-07
-total_pages: 82
+updated: 2026-04-20
+total_pages: 83
 ---
 
 # Research Wiki — Index
@@ -127,12 +127,14 @@ All pages organized by category. One line per page: link + one-sentence summary.
 
 ---
 
-## Findings (4)
+## Findings (5)
 
 - [[findings/jaad-gaze-findings|JAAD Gaze Findings]] — walking+looking → 95.7% cross at decision_point; standing+not-looking → 44.9% (lowest ambiguity pair)
 - [[findings/pie-gaze-reversal|PIE Gaze Reversal]] — walking+not-looking → 74.1% cross (higher than walking+looking 56%); gaze sign reverses from JAAD
 - [[findings/pie-intention-bimodality|PIE Intention Bimodality]] — mean=0.712, median=0.850; 42.5% of peds at 0.9–1.0; binarization discards calibration
 - [[findings/road-ped-tube-statistics|ROAD++ Tube Statistics]] — 9,573 ped tubes, median 58 frames, extreme scale variation; primary detection challenge
+- [[findings/exp1-vs-retinanet-baseline|Exp1 vs RetinaNet Baseline]] — Qwen2.5-VL beats RetinaNet on agent/action/loc (GT boxes) but duplex/triplet weaker; t-norm negligible in both models
+- [[findings/exp1b-fcos-detection|Exp1b FCOS Dense Detection Design]] — FCOS dense detection (Qwen2.5-VL ViT + LoRA, Gödel t-norm); agent=60.6%, action=32.4%, loc=50.0%, duplex=23.1%, triplet=17.5% macro-mAP (ep15, Apr 20)
 
 ---
 
