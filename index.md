@@ -1,7 +1,7 @@
 ---
 type: index
 updated: 2026-05-11
-total_pages: 110
+total_pages: 111
 ---
 
 # Research Wiki — Index
@@ -64,15 +64,16 @@ All pages organized by category. One line per page: link + one-sentence summary.
 
 ---
 
-## Papers (32)
+## Papers (33)
 
 ### Causal Theory
 - [[papers/pearl-2009-causality|Pearl 2009 — Causality]] — DAGs, SCMs, do-calculus, d-separation, counterfactuals; theoretical foundation for DSDAG; includes custom causal graph design thought for ROAD-Waymo
 - [[papers/cheng-2025-mcam|Cheng 2025 — MCAM/DSDAG]] — Driving State DAG for causal ego-vehicle video understanding; SOTA on BDD-X + CoVLA; core reasoning component for Approach 4 (ICCV 2025)
 
-### Pretraining / VLA
+### Pretraining / VLA / World Models
 - [[papers/covla-2025|CoVLA 2025]] — 10K clips, 6M frames, behavior + reasoning captions; Stage 1 pre-training source for Approach 3 causal head; reasoning captions supervise W (reason mode) (arXiv:2408.10845)
 - [[papers/chen-2026-vl-jepa|Chen 2026 — VL-JEPA]] — predicts answer embeddings instead of tokens; V-JEPA 2 + Llama-3 predictor + EmbeddingGemma Y-Encoder; 1.6B beats CLIP/SigLIP2/PE-Core on motion benchmarks and matches Qwen-VL on VQA at half the trainable params (arXiv:2512.10942)
+- [[papers/maes-2026-lewm|Maes 2026 — LeWorldModel]] — first JEPA trained stably end-to-end from raw pixels with only 2 loss terms (MSE + SIGReg); 15M params, single-GPU in hours; 48× faster planning than DINO-WM; reference paper for Approach 6 in ROAD_Reason (arXiv:2603.19312)
 
 ### Feature Fusion / Attention
 - [[papers/fu-2024-frozen-detr|Fu 2024 — Frozen-DETR]] — frozen foundation model as plug-and-play feature enhancer for DETR; CLS token as image query + patch tokens as extra FPN level (NeurIPS 2024)

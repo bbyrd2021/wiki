@@ -8,6 +8,16 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 
 ---
 
+## [2026-05-11] INGEST — LeWorldModel (Maes et al., arXiv 2603.19312)
+
+- Pages created: 1 (`papers/maes-2026-lewm.md`)
+- Pages updated: 3 (`directions/lewm-scene-prediction.md`, `index.md`, `log.md`)
+- Buds harvested: 15 new (I-JEPA, V-JEPA, V-JEPA 2, DINO-WM, PLDM, VICReg, LeJEPA, Causal-JEPA, DreamerV3, TD-MPC2, DINOv2, DIAMOND, IRIS, LeCun "Path to AMI", Navigation World Models)
+- Source: `wiki/raw/LeWM.pdf` (Mila / NYU / Samsung SAIL / Brown; LeCun + Balestriero co-authors; 24 Mar 2026)
+- Summary: First JEPA trained stably end-to-end from raw pixels with only 2 loss terms — next-embedding MSE + SIGReg anti-collapse. ViT-tiny encoder + 6-layer transformer predictor (~15M params) trainable on a single GPU in hours. Plans 48× faster than DINO-WM (0.98s vs 47s) while matching/beating it on Push-T / OGBench-Cube / Two-Room / Reacher continuous control. Single tunable hyperparameter (λ) vs PLDM's 6. Provides the published reference for [[directions/lewm-scene-prediction|Approach 6]] in ROAD_Reason, making the previously-speculative direction concrete: workstation-feasible JEPA, action-conditioned latent prediction, violation-of-expectation surprise as a free anomaly detector for driving.
+
+---
+
 ## [2026-05-11] UPDATE — Exp2c training progress + backbone size comparison
 - Pages updated: 3
   - `findings/exp2c-frozen-detr.md` — added training results table (14 epochs complete, ep15 in progress), GIoU trend analysis, backbone size comparison vs 3D-RetinaNet (ResNet-50 I3D 46M vs EfficientNet-B0 5.3M = 9x gap), scaling implications
