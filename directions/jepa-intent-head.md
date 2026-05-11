@@ -39,7 +39,7 @@ Add t-norm constraint loss to intent head outputs — combines Approaches 2 + 4.
 | Paper | arXiv | Relevance |
 |-------|-------|-----------|
 | V-JEPA 2 | 2506.09985 | Primary backbone |
-| VL-JEPA | 2512.10942 | Vision-language extension |
+| [[papers/chen-2026-vl-jepa\|VL-JEPA]] | 2512.10942 | Vision-language extension; same V-JEPA 2 ViT-L backbone, +Llama-3 predictor + EmbeddingGemma Y-Encoder; SOTA on motion-centric benchmarks (Feb 2026) |
 | Drive-JEPA | 2601.22032 | AV pipeline demo |
 
 ## Why Novel

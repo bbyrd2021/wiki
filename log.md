@@ -476,3 +476,10 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 
 - Pages updated: 3 (findings/exp1b-fcos-detection.md, projects/road-reason.md, index.md)
 - Summary: Exp1b FCOS dense detection training (15 epochs) complete. Final eval: agent=60.6%, action=32.4%, loc=50.0%, duplex=23.1%, triplet=17.5% macro-mAP on fg tokens. Beats Exp1 oracle-box on all 5 heads. Constraint violation rate=0.29%. Model still improving at epoch 15 — no convergence plateau. Next step: tube linking for ECCV-comparable f-mAP / v-mAP.
+
+## [2026-05-11] INGEST — VL-JEPA (Chen et al., arXiv 2512.10942)
+
+- Pages created: 1 (`papers/chen-2026-vl-jepa.md`)
+- Pages updated: 3 (`index.md`, `directions/jepa-intent-head.md`, `log.md`)
+- Source: `wiki/raw/VL-JEPA.pdf` (Meta FAIR / HKUST / Sorbonne / NYU; LeCun is co-author; Feb 2 2026)
+- Summary: First JEPA-style VLM — predict the *answer embedding* (Llama-3 predictor over V-JEPA 2 ViT-L + EmbeddingGemma-300M Y-Encoder, InfoNCE in 1536-dim shared space) instead of generating tokens. 1.6B params outperforms CLIP/SigLIP2/PE-Core on 8 classification + 8 retrieval benchmarks (motion-centric: SSv2, EK-100, EgoExo4D), matches Qwen-VL/InstructBLIP on VQA, new 65.7% SOTA on WorldPrediction-WM. Native selective decoding gives 2.85× fewer decode calls in streaming. Direct architectural relative of Approach 5 ([[directions/jepa-intent-head|V-JEPA intent head]]) and a latent-space alternative to the token-generative Approach 3 ([[methods/qwen25-vl-multitask|Qwen2.5-VL]]) and Approach 4 ([[methods/multimodal-causal-driving|MCDM]]).
