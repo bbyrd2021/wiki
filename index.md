@@ -1,7 +1,7 @@
 ---
 type: index
-updated: 2026-04-20
-total_pages: 83
+updated: 2026-05-11
+total_pages: 109
 ---
 
 # Research Wiki — Index
@@ -28,13 +28,13 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[projects/twinlitenet|TwinLiteNet]] — lightweight dual-task segmentation + lane detection optimized for embedded hardware
 - [[projects/eff-light-detection|eff_light_detection]] — 7-class EfficientNet-B0 traffic light classifier (LISA dataset)
 - [[projects/eff-sign-detection|eff_sign_detection]] — 15-class EfficientNet traffic sign classifier (Mapillary MTSD v2)
-- [[projects/slurp|SLURP]] — spoken language understanding research; methodology parallels (encoder collapse, class imbalance) apply to AD models
+- [[projects/slurp|SLURP]] — spoken language understanding; WavLM-Hier (0.877/0.833 F1w, 0.820 Intent Acc) recovers from frozen-Wav2Vec2 collapse; audio beats text oracle
 
 ---
 
 ## Datasets (6)
 
-- [[datasets/bdd-x|BDD-X]] — 7,000 videos, 26,538 action+justification pairs (manual); Stage 1 pre-training for W (reason mode); ECCV 2018
+- [[datasets/bdd-x|BDD-X]] — 7,000 videos, 26,538 action+justification pairs (manual); Exp3 in Approach 3 Qwen multi-task series; ECCV 2018
 - [[datasets/covla|CoVLA]] — 10K clips, 6M frames, Tokyo; frame-level plain_caption (→Y) + risk (→W); full CAN bus + 60-pt trajectory; Stage 1 pre-training at scale
 - [[datasets/jaad|JAAD]] — 346 videos, 686 behavioral pedestrians, 5-layer XML; 95.7% gaze-cross rate at decision_point
 - [[datasets/pie|PIE]] — 53 videos, 1842 ped tracks, crowd-sourced intention_prob; gaze reversal vs JAAD
@@ -59,16 +59,34 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[concepts/multi-task-perception|Multi-Task Perception]] — joint detection + segmentation + lane detection; end-to-end vs. modular approaches
 - [[concepts/bev-fusion|BEV Fusion]] — camera + LiDAR bird's-eye view projection for 3D perception
 - [[concepts/occlusion|Occlusion]] — occlusion annotations in JAAD/PIE; an active frontier for occlusion-robust intent models
+- [[concepts/vlm-localization-gap|VLM Localization Gap]] — why frozen ViT features fail at detection; single-scale problem, multi-scale solutions (ViTDet, Frozen-DETR, Deformable DETR)
+- [[concepts/encoder-collapse|Encoder Collapse]] — frozen-encoder + imbalance + standard CE → majority-class collapse within epoch 1; diagnostic checklist + cross-domain transfer
 
 ---
 
-## Papers (20)
+## Papers (31)
 
 ### Causal Theory
 - [[papers/pearl-2009-causality|Pearl 2009 — Causality]] — DAGs, SCMs, do-calculus, d-separation, counterfactuals; theoretical foundation for DSDAG; includes custom causal graph design thought for ROAD-Waymo
+- [[papers/cheng-2025-mcam|Cheng 2025 — MCAM/DSDAG]] — Driving State DAG for causal ego-vehicle video understanding; SOTA on BDD-X + CoVLA; core reasoning component for Approach 4 (ICCV 2025)
 
 ### Pretraining / VLA
 - [[papers/covla-2025|CoVLA 2025]] — 10K clips, 6M frames, behavior + reasoning captions; Stage 1 pre-training source for Approach 3 causal head; reasoning captions supervise W (reason mode) (arXiv:2408.10845)
+
+### Feature Fusion / Attention
+- [[papers/fu-2024-frozen-detr|Fu 2024 — Frozen-DETR]] — frozen foundation model as plug-and-play feature enhancer for DETR; CLS token as image query + patch tokens as extra FPN level (NeurIPS 2024)
+- [[papers/gao-2025-vmcnet|Gao 2025 — VMCNet]] — trainable CNN + frozen CLIP ViT with FiLM-style modulation for open-vocabulary detection; most comparable to Exp2b architecture (arXiv 2025)
+- [[papers/woo-2018-cbam|Woo 2018 — CBAM]] — channel + spatial attention module; lightweight drop-in for per-channel/per-location feature gating (ECCV 2018)
+- [[papers/perez-2018-film|Perez 2018 — FiLM]] — feature-wise linear modulation: per-channel gamma/beta conditioning from external modality (AAAI 2018)
+- [[papers/chen-2023-vit-adapter|Chen 2023 — ViT-Adapter]] — pre-training-free adapter injecting CNN spatial priors into plain ViT via cross-attention; 60.9 AP on COCO (ICLR 2023 Spotlight)
+- [[papers/xia-2024-vit-comer|Xia 2024 — ViT-CoMer]] — bidirectional CNN-Transformer multi-scale fusion; MRFP + CTI modules; 64.3 AP on COCO (CVPR 2024 Highlight)
+
+### Neuro-Symbolic Constraints
+- [[papers/stoian-2024-pishield|Stoian 2024 — PiShield]] — Shield Layers guaranteeing constraint satisfaction; drop-in replacement for t-norm loss; demonstrated on ROAD-R (IJCAI 2024)
+- [[papers/stoian-2023-efficient-tnorms|Stoian 2023 — Efficient T-norms]] — memory-efficient sparse t-norm losses for autonomous driving; <25 GiB vs >100 GiB standard (NeSy 2023)
+
+### Action Detection
+- [[papers/bao-2025-openmixer|Bao 2025 — OpenMixer]] — DETR-style OVAD on frozen CLIP-ViP; S-OMB (spatial) + T-OMB (temporal) + DFA (alignment); planned detection backbone for Approach 4 (WACV 2025)
 
 ### ROAD / ROAD++
 - [[papers/singh-2022-road|Singh 2022 — ROAD]] — foundational ROAD paper; introduces compositional label framework and 3D-RetinaNet baseline (IEEE TPAMI 2022)
@@ -97,7 +115,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 
 ---
 
-## Methods (9)
+## Methods (12)
 
 - [[methods/3d-retinanet|3D-RetinaNet]] — Kinetics-pretrained anchor-based tube detector; ROAD/ROAD++ baseline for all challenge comparisons
 - [[methods/pedformer|PedFormer]] — cross-modal Transformer + gated multitask; JAAD/PIE SOTA at ICRA 2023
@@ -109,6 +127,8 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[methods/smolvlm-road|SmolVLM Baseline]] — generative VLM baseline for ROAD_Reason zero-shot / constraint-prompted / GT-conditioned reasoning
 - [[methods/qwen25-vl-multitask|Qwen2.5-VL Multi-Task]] — Approach 3: shared Qwen2.5-VL-7B backbone with three task heads (BDD-X captioning, ROAD-R tube detection + t-norm, CoVLA captioning + trajectory)
 - [[methods/multimodal-causal-driving|Multimodal Causal Driving Model]] — full architecture spec for Approach 4: CLIP-ViP → OpenMixer → DSDAG + VLT → logit reweighting → t-norm; includes defense prep
+- [[methods/wavlm-hier|WavLM-Hier]] — WavLM-Large + attention pooling + hierarchical scenario→action conditioning + curriculum teacher forcing + ontology masking; SLURP best run
+- [[methods/exp1-road-r-code-explainer|Exp1 ROAD-R Code Explainer]] — beginner-friendly walkthrough of the Qwen2.5-VL + ROI pool + temporal attention + t-norm loss code in `exp1_road_r/`
 
 ---
 
@@ -127,24 +147,34 @@ All pages organized by category. One line per page: link + one-sentence summary.
 
 ---
 
-## Findings (5)
+## Findings (7)
 
 - [[findings/jaad-gaze-findings|JAAD Gaze Findings]] — walking+looking → 95.7% cross at decision_point; standing+not-looking → 44.9% (lowest ambiguity pair)
 - [[findings/pie-gaze-reversal|PIE Gaze Reversal]] — walking+not-looking → 74.1% cross (higher than walking+looking 56%); gaze sign reverses from JAAD
 - [[findings/pie-intention-bimodality|PIE Intention Bimodality]] — mean=0.712, median=0.850; 42.5% of peds at 0.9–1.0; binarization discards calibration
 - [[findings/road-ped-tube-statistics|ROAD++ Tube Statistics]] — 9,573 ped tubes, median 58 frames, extreme scale variation; primary detection challenge
 - [[findings/exp1-vs-retinanet-baseline|Exp1 vs RetinaNet Baseline]] — Qwen2.5-VL beats RetinaNet on agent/action/loc (GT boxes) but duplex/triplet weaker; t-norm negligible in both models
-- [[findings/exp1b-fcos-detection|Exp1b FCOS Dense Detection Design]] — FCOS dense detection (Qwen2.5-VL ViT + LoRA, Gödel t-norm); agent=60.6%, action=32.4%, loc=50.0%, duplex=23.1%, triplet=17.5% macro-mAP (ep15, Apr 20)
+- [[findings/exp1b-fcos-detection|Exp1b FCOS Dense Detection Design]] — FCOS dense detection (ep15); internal macro-mAP agent=60.6% but baseline-compat f-mAP only 3.2% — FCOS box quality bottleneck at IoU=0.5
+- [[findings/exp2-detr-detection|Exp2 DETR-Style Tube Detection]] — 100 learnable queries, Hungarian matching, L1+GIoU, clip-level spatiotemporal attention; replaces FCOS to fix localization bottleneck; complete (agent f-mAP 0.63%)
+- [[findings/exp2b-deformable-detr|Exp2b Deformable DETR]] — EfficientNet-B0 + FPN + Deformable DETR with iterative refinement, temporal self-attention, auxiliary losses; fixes three missing standard components from Exp2; training (Apr 27)
+- [[findings/exp2c-frozen-detr|Exp2c Frozen-DETR]] — EfficientNet-FPN + 6-layer deformable encoder (4 scales) + CLIP ViT-L/14 (frozen); GIoU 0.793→0.596 through ep15; backbone 9x smaller than RetinaNet baseline; f-mAP eval pending (training, May 11)
+- [[findings/sparse-temporal-pie-results|SparseTemporalPIE Full Results]] — complete narrative: SOTA tables (PIE + JAAD), v3 vs v4 ablation, backbone init ablation, IL step progression, v=0 stationary eval, discussion and limitations
+- [[findings/traffic-light-domain-shift|Traffic Light Domain-Shift Retrain]] — LISA→rig red/yellow confusion + dark-housing failure; retrained on LISA+BSTLD with new `off` class to retire the HSV gate (draft, 2026-05-07)
+- [[findings/yolov10-bdd13-extension|YOLOv10-13 Extension]] — extended YOLO_BDD's 10-class detector to 13 (deer, cone, barrier) for AutoDrive; mAP50 0.602 across 13 cls, no regression on BDD-10 (0.524→0.527), Grounding DINO auto-labeled deer (2026-05-08)
+- [[findings/slurp-collapse-e1|SLURP E1 Collapse]] — frozen Wav2Vec2 + CE collapses to majority class in epoch 1; 17/18 scenario and 45/46 action classes get zero F1; matches Phase 3 paper to 3 decimals
+- [[findings/slurp-wavlm-hier-results|SLURP WavLM-Hier Results]] — Sc F1w 0.877 / Act F1w 0.833 / Intent Acc 0.820 on test; hierarchy +0.024 intent acc; encoder choice dominates; `general` scenario is sole weak class
 
 ---
 
-## Comparisons (3)
+## Comparisons (6)
 
 - [[comparisons/dataset-comparison|Dataset Comparison]] — side-by-side JAAD vs PIE vs ROAD++ capabilities table from SYNTHESIS Part 3
 - [[comparisons/model-comparison|Model Comparison]] — input/output patterns across 11 published models from SYNTHESIS Part 6
 - [[comparisons/jaad-vs-pie-gaze|JAAD vs PIE Gaze]] — detailed analysis of the gaze reversal; implications for multi-dataset training
 - [[comparisons/openmixer-vs-retinanet|OpenMixer vs 3D-RetinaNet]] — backbone gap analysis: spatial/temporal/semantic trade-offs for MCDM Approach 3
 - [[comparisons/bdd-x-vs-covla|BDD-X vs CoVLA]] — Stage 1 pre-training sources: quality vs scale, DSDAG field mapping, joint training strategy
+- [[comparisons/fusion-for-detection-lit-review|CNN-VLM Fusion Lit Review]] — literature review: fusion methods for detection + constraint reasoning; motivated by Exp2b scalar gate bottleneck (draft, VMCNet first entry)
+- [[comparisons/slurp-audio-vs-text-oracle|SLURP Audio vs Text Oracle]] — WavLM-Hier on raw audio beats RoBERTa on gold transcripts on every metric (+0.28 Act F1w); prosody carries intent that transcripts discard
 
 ---
 

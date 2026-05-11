@@ -3,7 +3,7 @@ type: project
 title: "ROAD_Reason — Logic-Constrained Scene Reasoning"
 aliases: ["ROAD_Reason", "ROAD Reason"]
 created: 2026-04-07
-updated: 2026-04-20
+updated: 2026-05-11
 sources:
   - "ROAD_Reason/docs/CLAUDE.md"
   - "ROAD_Reason/docs/APPROACHES.md"
@@ -109,17 +109,37 @@ See [[methods/multimodal-causal-driving|Full Architecture Spec]] for module-by-m
 | Experiment | Description | Status | Best result |
 |------------|-------------|--------|-------------|
 | Exp1 | Frozen ViT + GT boxes + BCE + Łukasiewicz t-norm | Complete (ep6) | action mAP=22.2%, duplex=12.3%, triplet=8.8% |
-| **Exp1b** | **LoRA + FCOS dense detection + focal loss + Gödel t-norm** | **Complete (ep15, Apr 20)** | agent=60.6%, action=32.4%, loc=50.0%, duplex=23.1%, triplet=17.5% (macro-mAP, fg tokens) |
+| **Exp1b** | **LoRA + FCOS dense detection + focal loss + Gödel t-norm** | **Complete (ep15, Apr 20)** | Internal: agent=60.6%, action=32.4% (macro-mAP, fg tokens) · Baseline-compat: agent=3.2%, action=1.6% (f-mAP) |
+| **Exp2** | **DETR-style set prediction: 100 learnable queries + Hungarian matching + L1+GIoU + Gödel t-norm** | **Complete (ep30, Apr 24)** | f-mAP: agent=0.63% (28x below RetinaNet); localization bottleneck |
+| **Exp2b** | **Deformable DETR + EfficientNet-B0/FPN + iterative refinement + auxiliary losses** | **Complete (ep27/30, May 4)** | f-mAP: agent=1.71% (10x below RetinaNet); VLM localization bottleneck confirmed |
+| **Exp2c** | **Frozen-DETR: EfficientNet-FPN + DETR encoder (4 scales) + CLIP ViT-L/14 (frozen)** | **Training ep15/30 (May 11)** | GIoU 0.793→0.596 (improving); val action mAP 42.5%; f-mAP pending ep15 eval |
+| **Exp3** | **BDD-X captioning: LoRA r=16 on LLM + merger; CE on response tokens; 3 epochs** | **Ready to train (Apr 21)** | TBD |
 
-**Exp1b** redesigns Exp1 from oracle-box classification to paper-analogous FCOS dense detection: every spatial ViT token predicts agentness + box + labels; no GT boxes needed at inference. Agentness is a real learned score (replaces hardcoded 1.0). See [[findings/exp1b-fcos-detection|Exp1b design page]] for full architecture, loss breakdown, and expected results.
+**Exp1b** redesigns Exp1 from oracle-box classification to FCOS dense detection: every spatial ViT token predicts agentness + box + labels. Internal macro-mAP is strong, but baseline-compatible f-mAP at IoU=0.5 is only 3.2% — FCOS box quality is the bottleneck, not classification. See [[findings/exp1b-fcos-detection|Exp1b finding page]].
+
+**Exp2** replaces FCOS with a DETR-style clip-level decoder: 100 learnable queries attend to all T×H'×W'=2048 spatiotemporal tokens, each query predicts a full tube (T boxes + tube-level labels). Hungarian matching, L1+GIoU supervision, and real learned agentness head. Warm-starts ViT+LoRA from Exp1b. See [[findings/exp2-detr-detection|Exp2 finding page]].
+
+**Exp2b** redesigns the decoder as standard Deformable DETR with three fixes: (1) per-frame decoding with temporal self-attention (replaces temporal stacking), (2) iterative box refinement with per-layer box heads, (3) auxiliary losses at every decoder layer. Adds EfficientNet-B0 + FPN as spatial backbone alongside Qwen ViT, fused via learned gates. 300 queries, 692M total params (15.6M trainable). Warm-starts from Exp2. See [[findings/exp2b-deformable-detr|Exp2b finding page]].
+
+**Exp2c** faithfully implements [[papers/fu-2024-frozen-detr|Frozen-DETR]] (Fu et al., NeurIPS 2024) to fix Exp2b's two gaps: (1) adds a 6-layer deformable encoder so CNN and VLM tokens fuse through self-attention rather than a scalar gate, and (2) replaces Qwen2.5-VL ViT with CLIP ViT-L/14@336px (Dr. Moradi approved, 2026-05-07). CLIP patch tokens enter as 4th encoder scale, are stripped after encoding; CLS token is injected per-layer into the decoder. ~445M total params (~15.7M trainable), saves ~5 GB GPU vs Exp2b. See [[findings/exp2c-frozen-detr|Exp2c finding page]].
+
+**Exp3** fine-tunes Qwen2.5-VL-7B on BDD-X (16,553 train examples): LoRA r=16 on LLM attention + MLP layers, merger trainable, ViT frozen. Input: single BDD100K keyframe. Output: "Action: X\nJustification: Y." Loss: CE on assistant tokens only (label mask via prompt-length comparison). Evaluated with BLEU-4 action / justification / combined.
 
 ## Running
 
 ```bash
-# Experiment 1b — FCOS dense detection (current)
+# Experiment 3 — BDD-X captioning (ready to train)
 cd /data/repos/ROAD_Reason
+bash experiments/exp3_bddx/run.sh           # train + BLEU-4 eval
+
+# Experiment 2 — DETR-style tube detection (training)
+cd /data/repos/ROAD_Reason
+bash experiments/exp2_detr_qwen/run.sh      # train + frame-mAP + video-mAP
+
+# Experiment 1b — FCOS dense detection (complete)
 python -u experiments/exp1b_road_r/train.py
 python -u experiments/exp1b_road_r/eval.py --out experiments/exp1b_road_r/logs/eval_results.json
+python -u experiments/exp1b_road_r/eval_baseline_compat.py
 
 # Experiment 1 — oracle-box classification (complete)
 python experiments/exp1_road_r/train.py

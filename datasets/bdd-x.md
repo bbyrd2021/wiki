@@ -7,7 +7,7 @@ updated: 2026-04-10
 sources:
   - "ROAD_Reason/datasets/BDD-X/BDD-X-Annotations_v1.csv"
   - "ROAD_Reason/datasets/BDD-X/README.md"
-tags: [dataset, captioning, explanation, bdd100k, stage1-pretraining, road-reason]
+tags: [dataset, captioning, explanation, bdd100k, approach3, road-reason]
 status: complete
 clips: 7000
 frames: 8400000
@@ -17,7 +17,7 @@ annotation_format: csv
 
 # BDD-X — Berkeley DeepDrive eXplanation
 
-**Kim et al., UC Berkeley** | ECCV 2018 | Stage 1 pre-training source for Approach 3 causal head
+**Kim et al., UC Berkeley** | ECCV 2018 | Exp3 in Approach 3 Qwen multi-task series
 
 ## What It Is
 
@@ -92,12 +92,14 @@ JUSTIFY: because a pedestrian is crossing the street.
 
 ## Relevance to Approach 3
 
-| Caption field | DSDAG node | Purpose |
-|---|---|---|
-| `Answer.Naction` | Y (action node) | Grounds Y in language — what action is happening |
-| `Answer.Njustification` | W (reason mode) | Grounds W — the causal reason behind the action |
+BDD-X is **Experiment 3** in the Approach 3 Qwen2.5-VL multi-task series (after ROAD-R detection experiments). The task: fine-tune Qwen2.5-VL on BDD-X to produce action + justification captions for driving clips. Evaluated with BLEU-4 / CIDEr / METEOR.
 
-BDD-X provides **human-annotated explanations** for ~7,000 US driving clips. Compared to CoVLA, it is smaller (26K action segments vs 6M frame captions) but the justifications are manually written — higher quality reasoning supervision for W than auto-generated captions. Used alongside CoVLA in Stage 1 to give the causal head both scale (CoVLA) and quality (BDD-X).
+| Caption field | Purpose |
+|---|---|
+| `Answer.Naction` | What the vehicle is doing |
+| `Answer.Njustification` | Why (causal explanation) |
+
+Smaller than CoVLA (26K action segments vs 6M frames) but manually written — higher quality reasoning signal. Part of the Approach 3 multi-task baseline alongside CoVLA and ROAD-R.
 
 ## License
 
@@ -116,7 +118,6 @@ UC Berkeley custom license. Non-commercial research and educational use permitte
 
 ## Related
 
-- [[papers/covla-2025|CoVLA]] — complementary Stage 1 pre-training source (larger scale, frame-level)
-- [[methods/multimodal-causal-driving|Multimodal Causal Driving Model]] — Stage 1 training context
-- [[directions/constrained-vlm-reasoning|Approach 3]] — where BDD-X fits
+- [[papers/covla-2025|CoVLA]] — Exp4 in Approach 3 series (larger scale, frame-level)
+- [[directions/qwen-multitask-finetuning|Approach 3: Qwen Multi-Task]] — where BDD-X fits
 - [[datasets/bdd100k|BDD100K]] — base video dataset BDD-X is built on

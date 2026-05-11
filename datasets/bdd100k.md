@@ -3,10 +3,14 @@ type: dataset
 title: "BDD100K — Berkeley DeepDrive"
 aliases: ["BDD100K", "BDD-100K"]
 created: 2026-04-07
-updated: 2026-04-07
+updated: 2026-05-11
 sources: []
 tags: [dataset, bdd100k, detection, segmentation, lane]
 status: complete
+clips: 100000
+frames: 100000
+primary_units: 100000
+annotation_format: json
 ---
 
 # BDD100K

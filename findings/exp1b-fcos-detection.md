@@ -3,7 +3,7 @@ type: finding
 title: "Exp1b — FCOS Dense Detection Design (ROAD-Waymo)"
 aliases: ["exp1b", "exp1b fcos", "dense detection exp1b"]
 created: 2026-04-17
-updated: 2026-04-20
+updated: 2026-04-21
 sources:
   - "ROAD_Reason/experiments/exp1b_road_r/model.py"
   - "ROAD_Reason/experiments/exp1b_road_r/assign.py"
@@ -219,6 +219,8 @@ Epoch 1/15
 
 ## Eval Results (Epoch 15, 2026-04-20)
 
+### Internal eval (`eval.py`) — macro-mAP on foreground-thresholded tokens
+
 ```bash
 python -u experiments/exp1b_road_r/eval.py \
   --out experiments/exp1b_road_r/logs/eval_results.json
@@ -235,9 +237,33 @@ python -u experiments/exp1b_road_r/eval.py \
 
 **Exp1b vs Exp1 delta:** agent +24.9pp, action +10.2pp, loc +16.4pp, duplex +10.8pp, triplet +8.7pp
 
-**Exp1b vs 3D-RetinaNet (Gödel) delta:** agent +43.6pp, action +17.2pp, loc +36.6pp, duplex +9.5pp, triplet +8.1pp
+### Baseline-compatible eval (`eval_baseline_compat.py`) — official f-mAP at IoU=0.5
 
-**Caveat:** Exp1b macro-mAP is computed on foreground-thresholded tokens (not tube-linked f-mAP or v-mAP). Direct numeric comparison against the ROAD-R paper's f-mAP is favorable but not apples-to-apples — a tube-linking postprocessing step is required for ECCV-comparable f-mAP.
+```bash
+python -u experiments/exp1b_road_r/eval_baseline_compat.py \
+  --out experiments/exp1b_road_r/logs/baseline_compat_results.json
+```
+
+| Model | agent_ness | agent | action | loc | duplex | triplet | Note |
+|-------|-----------|-------|--------|-----|--------|---------|------|
+| 3D-RetinaNet + Gödel | — | 17.0% | 15.2% | 13.4% | 13.6% | 9.4% | f-mAP |
+| **Exp1b (FCOS, ep15)** | **6.0%** | **3.2%** | **1.6%** | **2.5%** | **0.38%** | **1.37%** | f-mAP, IoU=0.5 |
+
+Exp1b is **5.4× below the 3D-RetinaNet baseline** on baseline-compatible agent f-mAP.
+
+### Evaluation methodology gap — why 60.6% vs 3.2%
+
+The 20× discrepancy is structural, not a training failure:
+
+**Internal eval** computes mAP only over tokens that have already been matched to GT annotations (foreground-thresholded tokens). Classification accuracy on tokens that are already confirmed to be near agents is the easy part. The hard part — finding the agent in the first place — is not tested.
+
+**Baseline-compat eval** requires the full detection pipeline to succeed: predicted boxes must IoU ≥ 0.5 with GT boxes to count as true positives. FCOS on ViT tokens struggles here for two reasons:
+
+1. **Box quality under IoU=0.5:** Multiple nearby tokens all fire on the same agent and predict overlapping, slightly-offset boxes. NMS removes most of them. The surviving box is derived from a single token's FCOS (l,t,r,b) regression from its center — with no iterative refinement or anchor structure, getting IoU ≥ 0.5 is not reliable.
+
+2. **Lack of temporal context for box prediction:** FCOS predicts each frame independently. RetinaNet uses 3D convolutions that aggregate temporal evidence to improve per-frame box precision.
+
+This is the root motivation for Exp2 (DETR-style set prediction). See [[findings/exp2-detr-detection|Exp2 DETR Detection Design]].
 
 ### Key per-class findings
 

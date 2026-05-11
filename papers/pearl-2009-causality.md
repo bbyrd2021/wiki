@@ -8,7 +8,7 @@ sources: ["https://archive.illc.uva.nl/cil/uploaded_files/inlineitem/Pearl_2009_
 tags: [paper, causality, causal-graph, scm, do-calculus, dsdag, theory]
 status: complete
 venue: "Cambridge University Press, 2nd edition"
-author: "Judea Pearl"
+authors: "Pearl"
 year: 2009
 relevance: "Referenced in MCAM (Cheng et al. ICCV 2025) — theoretical foundation for DSDAG module in [[methods/multimodal-causal-driving|MCDM Approach 3]]"
 ---
@@ -222,6 +222,6 @@ Where:
 ## Related
 
 - [[methods/multimodal-causal-driving|MCDM Architecture]] — DSDAG is the neural implementation of a Pearl-style SCM
-- [[papers/cheng-mcam-iccv2025|MCAM (Cheng et al. ICCV 2025)]] — cites Pearl as the theoretical basis for DSDAG
+- [[papers/cheng-2025-mcam|MCAM (Cheng et al. ICCV 2025)]] — cites Pearl as the theoretical basis for DSDAG
 - [[concepts/neuro-symbolic-constraints|Neuro-Symbolic Constraints]] — t-norm constraints operate at Rung 1 (associational); causal head operates at Rung 2
 - [[directions/constrained-vlm-reasoning|Approach 3 Overview]]
