@@ -101,7 +101,7 @@ created: YYYY-MM-DD
 updated: YYYY-MM-DD
 sources: []        # paths relative to /data/repos/
 tags: []
-status: draft | complete | stale
+status: draft | complete | stale | bud
 ---
 ```
 
@@ -131,47 +131,70 @@ feasibility: workstation | partial | cluster
 datasets_required: [road-plusplus]
 ```
 
+### Paper buds
+
+A **bud** is a stub `type: paper` page with `status: bud`. Buds are seeded by `/wiki-ingest` when it harvests the cited papers of an ingested paper. They carry best-effort `(authors, year, title, venue, arxiv)` and a `citing:` list of paper slugs that reference them:
+
+```yaml
+status: bud
+citing: [chen-2026-vl-jepa, foo-2025-bar]
+tags: [paper, bud]
+```
+
+Identity-match precedence (used by `wiki.py bud-match` and by `scaffold paper`):
+1. Exact `arxiv` match
+2. Exact `(surname, year)` match
+3. Fuzzy title token overlap (Jaccard ≥ 0.5)
+
+**Promotion:** when a future ingest matches an existing bud, `wiki.py scaffold paper` refuses to overwrite and points to `wiki.py bud-promote <slug>`. Promote flips `status: bud → draft`, preserves `citing` / `## Cited by` / `created` (the seed date is graph history). The ingest agent then edits the body and flips status to `complete` as usual. Slug never changes — inbound wikilinks survive.
+
+**Buds are not in `index.md`** by design — they're a parallel index browseable via `wiki.py bud-list`. The orphan-check and the `total_pages` count both skip buds.
+
+**Soft lint signals:** `bud-no-citing` (bud with empty citing list — every citer was deleted) and `bud-stale` (bud seeded > 365 days ago, never promoted) are surfaced by `wiki.py lint` for review, not auto-fixed.
+
 ---
 
-## Operations
+## Operations — Skills
 
-### Ingest — Adding a New Source
+The four core operations are implemented as **project skills** under `.claude/skills/`. Each skill is a thin instruction layer over the deterministic CLI at `.claude/scripts/wiki.py`. Karpathy's rule: thin harness, fat skills.
 
-1. Read the source file(s)
-2. Discuss key takeaways with user (what to emphasize)
-3. Identify which wiki pages need creation or update
-4. Create/update pages with correct frontmatter
-5. Update `index.md` with new page entries
-6. Append an entry to `log.md`:
-   ```
-   ## [YYYY-MM-DD] INGEST — Source Title
-   - Pages created: N  |  Pages updated: M
-   - Summary: ...
-   ```
+| Operation | Slash command | Skill file | What it does |
+|-----------|--------------|------------|--------------|
+| Ingest | `/wiki-ingest [source]` | `.claude/skills/wiki-ingest/SKILL.md` | Read a raw source, plan pages, scaffold, edit, update index + log, lint, commit. For papers: auto-spawns bud-harvest after writing. |
+| Query  | `/wiki-query "<question>"` | `.claude/skills/wiki-query/SKILL.md` | Search wiki, read top hits, synthesize answer with `[[wikilink]]` citations |
+| Lint   | `/wiki-lint` | `.claude/skills/wiki-lint/SKILL.md` | Run health check; triage & fix orphans, broken links, missing frontmatter |
+| Bud harvest | `/wiki-bud-from-paper <slug>` | `.claude/skills/wiki-bud-from-paper/SKILL.md` | Walk a paper's references, mint ≤15 stub buds for cited papers in lab themes |
 
-### Query — Answering a Question
+### CLI (`wiki.py`) subcommands
 
-1. Check `index.md` for relevant pages
-2. Read those pages
-3. Fall back to raw sources only if wiki coverage is insufficient
-4. Synthesize answer with wikilink citations
-5. If the answer produces valuable synthesis, file it as a new wiki page
-6. Append to `log.md`:
-   ```
-   ## [YYYY-MM-DD] QUERY — Question
-   - Pages consulted: ...
-   - New page created: yes/no
-   ```
+Reusable from the shell or from within a skill. Stdlib-only Python. Auto-detects wiki root.
 
-### Lint — Health Check
+```bash
+python3 .claude/scripts/wiki.py status                 # counts + dirty + recent log
+python3 .claude/scripts/wiki.py list [--type T] [--status S]
+python3 .claude/scripts/wiki.py search "<query>" [--limit N]
+python3 .claude/scripts/wiki.py scaffold <type> <slug> "<title>" [--sources path,…] [--arxiv ID]
+python3 .claude/scripts/wiki.py lint [--strict] [--json]
+python3 .claude/scripts/wiki.py cite <slug>            # print [[wikilink|title]] citation
+python3 .claude/scripts/wiki.py index-check            # orphan-only check
+python3 .claude/scripts/wiki.py recount                # fix index.md total_pages
 
-Check for:
-- Pages not appearing in `index.md` (orphans)
-- Broken wikilinks (`[[name]]` with no matching file)
-- Pages missing frontmatter
-- Contradictions between wiki pages and raw source verified numbers
-- Entities mentioned across pages without their own page
-- Stale status (`status: stale`) needing updates
+# Paper buds
+python3 .claude/scripts/wiki.py bud-add --slug X --title T --citing CITER --context "..." \
+                                        [--authors A] [--year YYYY] [--venue V] [--arxiv ID]
+python3 .claude/scripts/wiki.py bud-list [--citing <slug>] [--min-citers N]
+python3 .claude/scripts/wiki.py bud-promote <slug>     # bud → draft, preserve citing/created
+python3 .claude/scripts/wiki.py bud-match --arxiv ID | --author A --year YYYY --title T
+                                  [--suggest-slug]     # generate slug from citation
+```
+
+### Raw-source locations
+
+- `/data/repos/*` — immutable code repos (PhD core, detection, foundations)
+- `/data/repos/wiki/raw/` — drop folder for sources that don't have a repo home
+- `~/Downloads/` — papers, PDFs, slide decks, exports
+
+Ingest accepts a path, URL, or no argument (then `ls -lt` to propose candidates).
 
 ---
 
