@@ -118,17 +118,51 @@ Append a single entry. Format (keep it consistent with prior entries):
 
 ## Step 7 — Validate and commit
 
+**Both lint and commit are mandatory end-of-ingest steps**, not optional. An ingest is not done until lint is clean and the changes are committed.
+
+### 7a — Lint
+
 ```bash
-python3 .claude/scripts/wiki.py recount       # fix total_pages + updated date
-python3 .claude/scripts/wiki.py lint          # surface broken links / missing fields
+python3 .claude/scripts/wiki.py recount         # fix total_pages + updated date
+python3 .claude/scripts/wiki.py lint --strict   # exits nonzero if any issues remain
 ```
 
-Fix any issues your ingest introduced (broken wikilinks, missing frontmatter fields). Pre-existing issues — leave them; they belong to `/wiki-lint`.
+`--strict` means the ingest cannot proceed past Step 7a until lint is clean of *your* changes. If lint surfaces an issue your ingest introduced (broken wikilink, missing required field), fix it and re-run.
 
-Commit only when the user asks, or when you've made a self-contained ingest and the user said to commit automatically. Use a message like:
+**Pre-existing issues are not yours to fix during an ingest** — they belong to `/wiki-lint`. If `--strict` trips on something that was already broken before your ingest started (you can confirm with `git diff HEAD -- <file>`), drop the `--strict` flag, scan the output to confirm none of the issues are from your work, and proceed.
 
-```
+### 7b — Commit
+
+```bash
+git add <files-you-touched>
+git commit -m "$(cat <<'EOF'
 Ingest <source>: +N pages, +M updates
+
+<1–2 sentences on the *why* — what this unlocks, mirroring the log.md summary>
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+EOF
+)"
+```
+
+**Stage explicitly** — list each file you wrote or edited. The typical ingest set is:
+
+- the new primary page (`papers/<slug>.md` or wherever the entity lives)
+- `index.md` (the one-liner you added in Step 5)
+- `log.md` (the INGEST entry you appended in Step 6)
+- any cross-link edits in related pages (Step 3's "updates")
+- any bud pages created by the Step 4b harvest (`papers/<bud-slug>.md` for each)
+
+**Never use `git add .` or `git add -A`.** Pre-existing dirty work must not get bundled into the ingest commit; the commit must be self-contained and reviewable.
+
+### 7c — Push (only when asked)
+
+Do **not** push automatically. The commit lives locally until the user says "push", "share", or "publish". This is a hard rule: an ingest that pushes without permission has overreached.
+
+If the user asks to push:
+
+```bash
+git push origin main
 ```
 
 ## Domain rules (always)
