@@ -3,7 +3,7 @@ type: project
 title: "ROAD_Reason — Logic-Constrained Scene Reasoning"
 aliases: ["ROAD_Reason", "ROAD Reason"]
 created: 2026-04-07
-updated: 2026-05-11
+updated: 2026-06-04
 sources:
   - "ROAD_Reason/docs/CLAUDE.md"
   - "ROAD_Reason/docs/APPROACHES.md"
@@ -42,6 +42,7 @@ ROAD++ encodes implicit constraints via its compositional label structure:
 | 5. V-JEPA 2 intent head | V-JEPA 2 + MLP | Yes | Novel application |
 | 6. LeWM scene prediction | LeWM (~15M params) | Yes | Workstation-feasible |
 | 7. JEPA + VLM hybrid | VL-JEPA + t-norm | Yes | Long-term |
+| **8. VLM Reasoning Layer** | **Frozen 3D-RetinaNet + VLM (cached JSON, late fusion)** | **Yes** | **New — Moradi 2026-06-02 pivot, staged** |
 
 ## Approach 3: Qwen2.5-VL Multi-Task (New)
 
@@ -112,7 +113,12 @@ See [[methods/multimodal-causal-driving|Full Architecture Spec]] for module-by-m
 | **Exp1b** | **LoRA + FCOS dense detection + focal loss + Gödel t-norm** | **Complete (ep15, Apr 20)** | Internal: agent=60.6%, action=32.4% (macro-mAP, fg tokens) · Baseline-compat: agent=3.2%, action=1.6% (f-mAP) |
 | **Exp2** | **DETR-style set prediction: 100 learnable queries + Hungarian matching + L1+GIoU + Gödel t-norm** | **Complete (ep30, Apr 24)** | f-mAP: agent=0.63% (28x below RetinaNet); localization bottleneck |
 | **Exp2b** | **Deformable DETR + EfficientNet-B0/FPN + iterative refinement + auxiliary losses** | **Complete (ep27/30, May 4)** | f-mAP: agent=1.71% (10x below RetinaNet); VLM localization bottleneck confirmed |
-| **Exp2c** | **Frozen-DETR: EfficientNet-FPN + DETR encoder (4 scales) + CLIP ViT-L/14 (frozen)** | **Training ep15/30 (May 11)** | GIoU 0.793→0.596 (improving); val action mAP 42.5%; f-mAP pending ep15 eval |
+| **Exp2c** | **Frozen-DETR: EfficientNet-FPN + DETR encoder (4 scales) + CLIP ViT-L/14 (frozen)** | **Training ep24/30 (May 12)** | val action mAP 43.72% (ep23 best); f-mAP: agent 1.76%, recall 59% (ep15 eval) |
+| **Exp2d v1** | **Swin-L backbone (replaces EfficientNet-B0) + Frozen-DETR** | **Complete (ep4, May 12)** | val action mAP 44.55% (ep2 best); overfitting by ep3 |
+| **Exp2d v2** | **Swin-L + DINO COCO pretrained encoder (192 keys) + DETR augmentations + drop path 0.2** | **Training (May 12)** | Anti-overfitting relaunch; resolution bottleneck identified; see [[findings/exp2d-swin-detr-v2]] |
+| **Exp2e** | **R50 @ 800×1333 (paper's exact config) + CLIP ViT-L/14 + t-norm** | **Training (May 17)** | f-mAP: agent 5.5%, agent_ness 5.5% (ep11); resolution helps but score-localization decorrelation identified; see [[findings/exp2e-r50-frozen-detr]] |
+| **Exp2f** | **Flat 184-dim sigmoid head (baseline classification design) — fixes score-decorrelation** | **Training ep19/30 (May 26)** | f-mAP: agent=4.40% (ep14); matched action mAP=0.199 (ep18 best); see [[findings/exp2f-flat-head]] |
+| **Exp2g** | **MS-DETR: two-stage proposals (900 queries) + O2M (k=6) + full encoder loss + softmax agent** | **Training ep1/30 (May 26)** | Full Frozen-DETR/MS-DETR replication; 358.7M params (54.2M trainable); see [[findings/exp2g-msdetr]] |
 | **Exp3** | **BDD-X captioning: LoRA r=16 on LLM + merger; CE on response tokens; 3 epochs** | **Ready to train (Apr 21)** | TBD |
 
 **Exp1b** redesigns Exp1 from oracle-box classification to FCOS dense detection: every spatial ViT token predicts agentness + box + labels. Internal macro-mAP is strong, but baseline-compatible f-mAP at IoU=0.5 is only 3.2% — FCOS box quality is the bottleneck, not classification. See [[findings/exp1b-fcos-detection|Exp1b finding page]].
@@ -122,6 +128,14 @@ See [[methods/multimodal-causal-driving|Full Architecture Spec]] for module-by-m
 **Exp2b** redesigns the decoder as standard Deformable DETR with three fixes: (1) per-frame decoding with temporal self-attention (replaces temporal stacking), (2) iterative box refinement with per-layer box heads, (3) auxiliary losses at every decoder layer. Adds EfficientNet-B0 + FPN as spatial backbone alongside Qwen ViT, fused via learned gates. 300 queries, 692M total params (15.6M trainable). Warm-starts from Exp2. See [[findings/exp2b-deformable-detr|Exp2b finding page]].
 
 **Exp2c** faithfully implements [[papers/fu-2024-frozen-detr|Frozen-DETR]] (Fu et al., NeurIPS 2024) to fix Exp2b's two gaps: (1) adds a 6-layer deformable encoder so CNN and VLM tokens fuse through self-attention rather than a scalar gate, and (2) replaces Qwen2.5-VL ViT with CLIP ViT-L/14@336px (Dr. Moradi approved, 2026-05-07). CLIP patch tokens enter as 4th encoder scale, are stripped after encoding; CLS token is injected per-layer into the decoder. ~445M total params (~15.7M trainable), saves ~5 GB GPU vs Exp2b. See [[findings/exp2c-frozen-detr|Exp2c finding page]].
+
+**Exp2d** scales the spatial backbone from EfficientNet-B0 (~5.3M) to Swin-L (~195M) following the [[comparisons/yolov8x-vs-swin-l-backbone|backbone comparison]]. v1 showed fast learning (val action mAP 44.55% at ep2, beating exp2c's 43.72% at ep23) but overfitted by epoch 3 due to zero augmentation + small dataset (7K clips) + large model (214M trainable). v2 applies three anti-overfitting fixes: (1) DINO COCO pretrained encoder/decoder (192 keys from 51.9 AP checkpoint), (2) DETR-standard augmentations + strong color augmentation, (3) Swin-L drop path 0.2 + weight decay 0.05. See [[findings/exp2d-swin-detr-v2|Exp2d v2 finding page]].
+
+**Exp2e** addresses the root cause of low f-mAP identified across exp2c/2d: **input resolution** (384-448px vs paper's 800×1333). At low resolution, small objects become sub-pixel and can't achieve IoU≥0.5. Exp2e faithfully replicates the paper: ResNet-50 with FrozenBatchNorm at variable aspect ratio (train multi-scale [480..800], val 800×max1333). 457 DINO COCO keys transfer cleanly (R50 architecture matches exactly). The only difference from the paper: 5 ROAD multi-label heads + Gödel t-norm loss. **Post-eval finding:** resolution improved f-mAP ~4× (1.4% → 5.5% agent) but a deeper issue remains — **score-localization decorrelation** (top-scoring detections have terrible boxes because unmatched queries get zero gradient on classification heads). See [[findings/exp2e-r50-frozen-detr|Exp2e finding page]].
+
+**Exp2f** fixes the score-localization decorrelation by replacing exp2e's 6 separate classification heads with a **single flat `nn.Linear(256, 184)`** — the same design used by the 3D-RetinaNet baseline. Sigmoid + focal loss on ALL 300 queries × 184 dims means unmatched queries get explicit target=0 supervision on every class dimension, not just agentness. Result: agent f-mAP jumped from 1.4% to 4.4% (3x improvement). Still 4x below baseline due to query coverage limitations. See [[findings/exp2f-flat-head|Exp2f finding page]].
+
+**Exp2g** implements the full MS-DETR recipe from the Frozen-DETR paper to close the remaining gap. Three core additions: (1) two-stage query init from encoder proposals (900 queries, up from 300), (2) one-to-many auxiliary loss (k=6 matches per GT, 6x more positive training signals), (3) full encoder proposal supervision matching the reference exactly. Also adds softmax on agent dims (single-label) and 4D iterative box refinement. Systematic audit closed all remaining gaps vs reference repo. See [[findings/exp2g-msdetr|Exp2g finding page]].
 
 **Exp3** fine-tunes Qwen2.5-VL-7B on BDD-X (16,553 train examples): LoRA r=16 on LLM attention + MLP layers, merger trainable, ViT frozen. Input: single BDD100K keyframe. Output: "Action: X\nJustification: Y." Loss: CE on assistant tokens only (label mask via prompt-length comparison). Evaluated with BLEU-4 action / justification / combined.
 
@@ -155,5 +169,5 @@ python analysis/compute_stats.py
 ## Related
 
 - [[datasets/road-plusplus|ROAD++ Dataset]] | [[concepts/neuro-symbolic-constraints|Neuro-Symbolic Constraints]]
-- [[directions/qwen-multitask-finetuning|Approach 3: Qwen2.5-VL Multi-Task]] | [[directions/constrained-vlm-reasoning|Approach 4: Constrained VLM]] | [[directions/jepa-intent-head|Approach 5: V-JEPA 2]]
+- [[directions/qwen-multitask-finetuning|Approach 3: Qwen2.5-VL Multi-Task]] | [[directions/constrained-vlm-reasoning|Approach 4: Constrained VLM]] | [[directions/jepa-intent-head|Approach 5: V-JEPA 2]] | [[directions/vlm-reasoning-layer|Approach 8: VLM Reasoning Layer]]
 - [[projects/pedestrian-intent|PedestrianIntent++]] (dataset documentation)

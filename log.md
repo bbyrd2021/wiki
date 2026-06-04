@@ -8,6 +8,75 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 
 ---
 
+## [2026-05-29] UPDATE — yolov10s-bdd13 deployment re-verification
+
+- Pages updated: 1 (`findings/yolov10-bdd13-extension.md`)
+- Summary: Re-ran `model.val()` on the **deployed** `yolov10s-bdd13.pt` (the one copied into `AutoDrivePerception2026/yolov10_ros/models/`, used by `pipeline.launch`) against the 13-class val set. Confirms shipped weights match the training-time best.pt within rounding (mAP50 0.6009 vs reported 0.602; mAP50-95 0.3678 vs 0.368). Appended a "Deployment re-verification (2026-05-29)" section with the full per-class table (P/R/F1/mAP50/mAP50-95 for all 13 classes), so the wiki documents both training-time and deployment-time eval. Mirrored to `AutoDrivePerception2026/yolov10_ros/docs/detector_eval.md` for in-repo discoverability.
+
+---
+
+## [2026-05-27] UPDATE — Exp2 series narrative expanded with per-experiment specs
+
+- Pages updated: 1 (`findings/exp2-series-narrative.md`)
+- Summary: Major expansion of the exp2 series narrative for advisor presentation. Added: (1) backbone & foundation model comparison table across all 7 experiments, (2) classification head evolution table (6 separate heads → flat 184-dim → flat + O2M + softmax agent), (3) input/output specification, (4) when each architecture was adopted (vanilla DETR → Deformable DETR → Frozen-DETR → MS-DETR), (5) per-experiment pipeline diagrams showing full data flow, (6) third root cause (query coverage) alongside resolution and negative supervision, (7) OpenMixer integration outlook noting that MS-DETR additions are novel when combined with open-vocab action detection.
+
+## [2026-05-27] CREATE — MoonViT / Kimi-VL paper (Kimi Team 2025/2026)
+
+- Pages created: 1 (`papers/kimi-2025-moonvit.md`) | Pages updated: 1 (`index.md`)
+- Summary: Ingested MoonViT from Kimi-VL (arXiv 2504.07491) and MoonViT-3D from Kimi K2.5 (arXiv 2602.02276). ~400M native-resolution ViT built on SigLIP-SO-400M with NaViT packing + 2D RoPE — processes any resolution without resizing. MoonViT-3D packs 4 frames into spatiotemporal volumes with 4x temporal compression. Used by LocateAnything as vision encoder. Synthesized: native resolution directly addresses exp2 series resolution bottleneck; 2D RoPE decouples PE from fixed grid (vs our CLIP's interpolated absolute PE).
+- Lint: 0 new issues / 119 pages
+
+## [2026-05-27] CREATE — LocateAnything paper (Wang et al. 2026)
+
+- Pages created: 1 (`papers/wang-2026-locate-anything.md`) | Pages updated: 1 (`index.md`)
+- Summary: Ingested LocateAnything (arXiv 2605.27365) — NVIDIA's parallel box decoding (PBD) framework for VLM grounding. 3B params (MoonViT + Qwen2.5-3B), decodes full bounding boxes as atomic units in one step instead of serializing coordinates. 2.5x throughput over autoregressive alternatives, +3.8% F1 on LVIS. Trained on 12M images / 140M queries / 785M boxes. Synthesized connections to exp2 series (atomic vs. decomposed predictions parallel the flat-head lesson) and potential applications (auto-labeling, open-vocab ROAD-Waymo baseline).
+- Lint: 0 new issues / 118 pages
+
+## [2026-05-26] CREATE + UPDATE — Exp2g findings + exp2f results + series narrative
+
+- Pages created: 1 (`findings/exp2g-msdetr.md`) | Pages updated: 4 (`findings/exp2f-flat-head.md`, `findings/exp2-series-narrative.md`, `projects/road-reason.md`, `index.md`)
+- Summary: Created exp2g findings page documenting MS-DETR implementation — two-stage query init (900 proposals), O2M loss (k=6), full encoder proposal loss (184-dim head with Hungarian matching, matching Frozen-DETR reference exactly), softmax agent head, 4D reference points, valid_ratios pipeline. Documented three bugs found and fixed during training: GIoU OOM (N^2 matrix), binary encoder head not learning (replaced with reference's full cls head), and LAMBDA_CLS mismatch (2.0 → 1.0). Updated exp2f with actual results: agent f-mAP 4.40% (epoch 14), matched action mAP 0.199 (epoch 18 best). Extended series narrative through exp2g. Updated project page experiment table.
+- Lint: 0 new issues / 117 pages
+
+---
+
+## [2026-05-20] CREATE — Exp2 series narrative document
+
+- Pages created: 1 (`findings/exp2-series-narrative.md`) | Pages updated: 1 (`index.md`)
+- Summary: Connected narrative of the entire exp2 series (exp2 → 2b → 2c → 2d → 2e → 2f) — what was tried, why each experiment led to the next, and the two root causes identified: input resolution (secondary) and missing negative supervision on unmatched queries (dominant). Includes summary table of all experiments, diagnosis timeline, and forward path to exp2g and Approach 4.
+- Lint: 0 issues / 116 pages
+
+## [2026-05-20] CREATE — Exp2f findings + missing negative supervision post-mortem across exp2 series
+
+- Pages created: 1 (`findings/exp2f-flat-head.md`) | Pages updated: 7 (`projects/road-reason.md`, `index.md`, `findings/exp2e-r50-frozen-detr.md`, `findings/exp2-detr-detection.md`, `findings/exp2b-deformable-detr.md`, `findings/exp2c-frozen-detr.md`, `findings/exp2d-swin-detr-v2.md`)
+- Summary: Exp2e f-mAP eval (epoch 11) revealed missing negative supervision on unmatched queries — the dominant cause of low f-mAP across the entire exp2 series (exp2 through exp2e). The `_classification_loss` only applied to matched queries (~20/300); unmatched queries received zero gradient on all 5 classification heads, causing near-saturated class scores regardless of box quality. Standard DETR uses softmax with a "no-object" class which provides this supervision for free; our sigmoid heads needed explicit negative targets but didn't have them. Exp2f fixes this with a single flat `nn.Linear(256, 184)` + focal loss on ALL 300 queries x 184 dims — same design as the 3D-RetinaNet baseline. Post-mortem sections added to all 4 prior exp2 findings pages. Exp1/Exp1b were NOT affected (GT boxes / FCOS have correct per-token supervision).
+- Code: 6 files in `experiments/exp2f_flat_head/` (config, model, losses, matcher, train, eval_baseline_compat) + 4 symlinks + 1 copy
+- Lint: 0 issues / 115 pages
+
+## [2026-05-17] CREATE — Exp2e findings page + resolution diagnosis
+
+- Pages created: 1 (`findings/exp2e-r50-frozen-detr.md`) | Pages updated: 4 (`findings/exp2c-frozen-detr.md`, `findings/exp2d-swin-detr-v2.md`, `projects/road-reason.md`, `index.md`)
+- Summary: Root cause of low f-mAP (1-2%) identified: input resolution (384-448px) too low for IoU≥0.5 on small objects. Paper uses R50 @ 800×1333 (7× more pixels). Exp2e replicates paper's exact spatial config with only difference being 5 ROAD heads + t-norm loss. 457 DINO COCO keys transfer cleanly (R50 architecture match). Training started on GPU 0, 30.3 GB peak memory. Added post-mortem sections to exp2c and exp2d findings pages.
+- Lint: 0 issues / 114 pages
+
+## [2026-05-12] UPDATE — Full documentation pass: exp2d v2 + exp2c progress
+
+- Pages updated: 4 (`findings/exp2d-swin-detr-v2.md`, `findings/exp2c-frozen-detr.md`, `projects/road-reason.md`, `index.md`)
+- Summary: Comprehensive documentation update. Exp2d v2 page updated with strong color augmentation (brightness/contrast/lighting noise from DINO-coco sltransform.py), decoder norm mapping explanation, initial training metrics. Exp2c page extended through epoch 23 (peak val action mAP 43.72%, GIoU 0.538). Project page updated with exp2d v1/v2 entries and exp2c latest status.
+
+## [2026-05-12] CREATE — Exp2d v2 findings page + anti-overfitting relaunch
+
+- Pages created: 1 (`findings/exp2d-swin-detr-v2.md`) | Pages updated: 1 (`index.md`)
+- Summary: Exp2d v1 (Swin-L) overfitting by epoch 3. Three fixes applied: (1) DINO COCO pretrained encoder/decoder — 192 keys from `dino_4scale_r50_1x_coco_checkpoint0011.pth` (51.9 AP); (2) DETR-standard augmentations (flip + multi-scale resize + random crop + strong color aug); (3) Swin-L drop path 0.2, weight decay 0.01→0.05, DIM_FFN 1024→2048. Training restarted from exp2d v1 best weights (epoch 2).
+
+---
+
+## [2026-05-11] INGEST — ECCV 2024 ROAD++ Track 1 Winner (Zhang et al., arXiv:2410.23077)
+
+- Pages created: 0 | Pages updated: 3 (`papers/eccv24-track1.md` expanded from stub, `findings/exp2c-frozen-detr.md` with f-mAP results + landscape comparison, `index.md`)
+- Summary: Full ingestion of Track 1 winner paper. Method is YOLOv8x/m multi-branch (no VLM). 30.82% v-mAP, 18.41% v-mAP@0.5. No f-mAP reported. YOLOv8 achieves 31.6% agent f-mAP (from ROAD-Waymo paper). Added extension opportunity: YOLOv8 backbone + Frozen-DETR encoder + CLIP = our novel contribution.
+- Also added Exp2c epoch 15 f-mAP results: agent 1.76%, recall 59%. Added full ROAD-Waymo baseline landscape table.
+
 ## [2026-05-11] INGEST — LeWorldModel (Maes et al., arXiv 2603.19312)
 
 - Pages created: 1 (`papers/maes-2026-lewm.md`)
@@ -493,3 +562,10 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Pages updated: 3 (`index.md`, `directions/jepa-intent-head.md`, `log.md`)
 - Source: `wiki/raw/VL-JEPA.pdf` (Meta FAIR / HKUST / Sorbonne / NYU; LeCun is co-author; Feb 2 2026)
 - Summary: First JEPA-style VLM — predict the *answer embedding* (Llama-3 predictor over V-JEPA 2 ViT-L + EmbeddingGemma-300M Y-Encoder, InfoNCE in 1536-dim shared space) instead of generating tokens. 1.6B params outperforms CLIP/SigLIP2/PE-Core on 8 classification + 8 retrieval benchmarks (motion-centric: SSv2, EK-100, EgoExo4D), matches Qwen-VL/InstructBLIP on VQA, new 65.7% SOTA on WorldPrediction-WM. Native selective decoding gives 2.85× fewer decode calls in streaming. Direct architectural relative of Approach 5 ([[directions/jepa-intent-head|V-JEPA intent head]]) and a latent-space alternative to the token-generative Approach 3 ([[methods/qwen25-vl-multitask|Qwen2.5-VL]]) and Approach 4 ([[methods/multimodal-causal-driving|MCDM]]).
+
+## [2026-06-04] INGEST — Moradi 2026-06-02 direction (VLM Reasoning Layer over 3D-RetinaNet)
+
+- Pages created: 1 (`directions/vlm-reasoning-layer.md`)
+- Pages updated: 3 (`index.md`, `projects/road-reason.md`, `directions/constrained-vlm-reasoning.md`)
+- Source: `wiki/raw/2026-06-02_moradi_vlm_reasoning_layer.txt` (email from Dr. Moradi)
+- Summary: Dr. Moradi's revised research direction — augment, don't swap. Keep frozen 3D-RetinaNet (17.76% agent f-mAP floor); bolt a VLM on top that emits structured JSON per agent (`{agent, actions, location, rationale}`) with constraints baked into the prompt; cache outputs once; late-fuse language embeddings with detector logits via a small trainable head. Staged 4-step ladder: (1) VLM-as-offline-teacher no-train, (2) trainable fusion head, (3) LoRA-tune VLM on BDD-X+CoVLA, (4) distill reasoning into detector via contrastive alignment so VLM can be dropped at inference. Plus two orthogonal ROAD-R experiments (prompt-side negative constraints vs loss-side T-norm penalty). Diagnoses why exp2 series plateaued (DETR + CLIP are image-level, video-mAP punishes that). Demotes Approach 4 (OpenMixer + DSDAG + VLT) to long-term; likely shelves `exp4_retinamoon` (patch-level fusion, wrong axis).

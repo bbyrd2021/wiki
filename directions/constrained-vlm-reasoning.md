@@ -3,7 +3,7 @@ type: direction
 title: "Constrained VLM Reasoning (ROAD_Reason Approach 4)"
 aliases: ["constrained VLM", "OpenMixer DSDAG", "Approach 4"]
 created: 2026-04-07
-updated: 2026-04-07
+updated: 2026-06-04
 architecture_spec: "methods/multimodal-causal-driving"
 sources: ["ROAD_Reason/docs/APPROACHES.md", "architecture-spec-2026-04-07"]
 tags: [direction, road-plusplus, vlm, causal, t-norm, primary-contribution]
@@ -107,4 +107,5 @@ on ROAD-Waymo. Introduces reasoning-driven logit modulation — causal reasoning
 - [[projects/road-reason|ROAD_Reason]] | [[concepts/neuro-symbolic-constraints|Neuro-Symbolic Constraints]]
 - [[directions/qwen-multitask-finetuning|Qwen2.5-VL Multi-Task (Approach 3)]] — upstream baseline; its M_bddx + M_covla weights seed Stage 1
 - [[directions/jepa-intent-head|V-JEPA 2 Intent Head (Approach 5)]]
+- [[directions/vlm-reasoning-layer|VLM Reasoning Layer (Approach 8)]] — staged simpler sibling (2026-06-02 Moradi pivot); preserves 3D-RetinaNet trunk instead of swapping in OpenMixer
 - [[datasets/road-plusplus|ROAD++]]

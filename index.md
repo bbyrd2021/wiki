@@ -1,7 +1,7 @@
 ---
 type: index
-updated: 2026-05-11
-total_pages: 111
+updated: 2026-06-04
+total_pages: 120
 ---
 
 # Research Wiki — Index
@@ -90,11 +90,17 @@ All pages organized by category. One line per page: link + one-sentence summary.
 ### Action Detection
 - [[papers/bao-2025-openmixer|Bao 2025 — OpenMixer]] — DETR-style OVAD on frozen CLIP-ViP; S-OMB (spatial) + T-OMB (temporal) + DFA (alignment); planned detection backbone for Approach 4 (WACV 2025)
 
+### Vision Encoders
+- [[papers/kimi-2025-moonvit|Kimi 2025 — MoonViT]] — native-resolution ViT (NaViT packing + 2D RoPE); ~400M params; MoonViT-3D extends to video with 4-frame spatiotemporal packing; used by LocateAnything (arXiv 2025/2026)
+
+### Visual Grounding
+- [[papers/wang-2026-locate-anything|Wang 2026 — LocateAnything]] — parallel box decoding (PBD) for VLM grounding; 3B params, 2.5x throughput, +3.8% F1 on LVIS; 785M boxes training data (NVIDIA, arXiv 2026)
+
 ### ROAD / ROAD++
 - [[papers/singh-2022-road|Singh 2022 — ROAD]] — foundational ROAD paper; introduces compositional label framework and 3D-RetinaNet baseline (IEEE TPAMI 2022)
 - [[papers/marconato-2022-road-r|Marconato 2022 — ROAD-R]] — 243 logic requirements + t-norm constraint loss for verifiable AV predictions (Machine Learning 2023)
 - [[papers/salmank-2024-road-waymo|Salmank 2024 — ROAD-Waymo]] — ROAD++ / ROAD-Waymo dataset introduction; verified stats differ from paper claims (arXiv:2411.01683)
-- [[papers/eccv24-track1|ECCV 2024 Track 1 — Agent Detection]] — ECCV challenge winner; 30.82% video-mAP; addresses small-object challenges (arXiv:2410.23077)
+- [[papers/eccv24-track1|ECCV 2024 Track 1 — Agent Detection]] — Zhang et al.; YOLOv8x/m multi-branch; 30.82% v-mAP (18.41%@0.5); no f-mAP reported; no VLM features — extension opportunity (arXiv:2410.23077)
 - [[papers/eccv24-track3|ECCV 2024 Track 3 — Atomic Activity]] — ECCV challenge winner; 69% mAP on 64-class pedestrian action recognition (arXiv:2410.23092)
 
 ### JAAD / Both
@@ -134,7 +140,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 
 ---
 
-## Research Directions (10)
+## Research Directions (11)
 
 - [[directions/uncertainty-aware-intent|Uncertainty-Aware Intent]] — regression on PIE's intention_prob; no paper has trained calibrated uncertainty matching human disagreement (PIE)
 - [[directions/appearance-conditioned-intent|Appearance-Conditioned Intent]] — JAAD's 24 per-frame appearance attributes are unused by all surveyed papers; research opportunity (JAAD)
@@ -146,10 +152,11 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[directions/constrained-vlm-reasoning|Constrained VLM Reasoning]] — OpenMixer + DSDAG + VLT + t-norm on ROAD++; primary thesis contribution (ROAD_Reason Approach 4)
 - [[directions/jepa-intent-head|V-JEPA 2 Intent Head]] — V-JEPA 2 encoder + lightweight intent head on ROAD++; novel application (ROAD_Reason Approach 5)
 - [[directions/lewm-scene-prediction|LeWM Scene Prediction]] — workstation-feasible world model (15M params, single GPU) for ROAD++ future state prediction (Approach 6)
+- [[directions/vlm-reasoning-layer|VLM Reasoning Layer over 3D-RetinaNet]] — Moradi 2026-06-02 pivot: frozen 3D-RetinaNet trunk + cached VLM JSON late-fused with detector logits; staged 4-stage ladder (Approach 8)
 
 ---
 
-## Findings (7)
+## Findings (19)
 
 - [[findings/jaad-gaze-findings|JAAD Gaze Findings]] — walking+looking → 95.7% cross at decision_point; standing+not-looking → 44.9% (lowest ambiguity pair)
 - [[findings/pie-gaze-reversal|PIE Gaze Reversal]] — walking+not-looking → 74.1% cross (higher than walking+looking 56%); gaze sign reverses from JAAD
@@ -159,7 +166,12 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[findings/exp1b-fcos-detection|Exp1b FCOS Dense Detection Design]] — FCOS dense detection (ep15); internal macro-mAP agent=60.6% but baseline-compat f-mAP only 3.2% — FCOS box quality bottleneck at IoU=0.5
 - [[findings/exp2-detr-detection|Exp2 DETR-Style Tube Detection]] — 100 learnable queries, Hungarian matching, L1+GIoU, clip-level spatiotemporal attention; replaces FCOS to fix localization bottleneck; complete (agent f-mAP 0.63%)
 - [[findings/exp2b-deformable-detr|Exp2b Deformable DETR]] — EfficientNet-B0 + FPN + Deformable DETR with iterative refinement, temporal self-attention, auxiliary losses; fixes three missing standard components from Exp2; training (Apr 27)
-- [[findings/exp2c-frozen-detr|Exp2c Frozen-DETR]] — EfficientNet-FPN + 6-layer deformable encoder (4 scales) + CLIP ViT-L/14 (frozen); GIoU 0.793→0.596 through ep15; backbone 9x smaller than RetinaNet baseline; f-mAP eval pending (training, May 11)
+- [[findings/exp2c-frozen-detr|Exp2c Frozen-DETR]] — EfficientNet-FPN + 6-layer deformable encoder (4 scales) + CLIP ViT-L/14 (frozen); val action mAP 43.72% (ep23); GIoU 0.793→0.538; f-mAP: agent 1.76% at ep15 (training ep24/30, May 12)
+- [[findings/exp2d-swin-detr-v2|Exp2d v2 Swin-L Frozen-DETR]] — Swin-L backbone + DINO COCO pretrained encoder (192 keys) + DETR augmentations + strong color aug + drop path 0.2; anti-overfitting relaunch from exp2d v1 (training, May 12)
+- [[findings/exp2e-r50-frozen-detr|Exp2e R50 Frozen-DETR]] — resolution fix: R50 @ 800×1333 (paper's exact config) + CLIP ViT-L/14 + t-norm; 457 DINO COCO keys transferred; f-mAP improved to 5.5% but score-localization decorrelation identified (May 17)
+- [[findings/exp2f-flat-head|Exp2f Flat 184-dim Head]] — fixes score-localization decorrelation: single `nn.Linear(256, 184)` with focal loss on ALL 300 queries; f-mAP: agent 4.40% (3x over exp2e); matched action mAP 0.199 (ep18 best)
+- [[findings/exp2g-msdetr|Exp2g MS-DETR]] — full MS-DETR: two-stage (900 queries) + O2M (k=6) + encoder loss + softmax agent + 4D ref points; 358.7M params; systematic reference replication (training, May 26)
+- [[findings/exp2-series-narrative|Exp2 Series Narrative]] — connected story of exp2→2b→2c→2d→2e→2f→2g: resolution + negative supervision + query coverage, how each experiment led to the next
 - [[findings/sparse-temporal-pie-results|SparseTemporalPIE Full Results]] — complete narrative: SOTA tables (PIE + JAAD), v3 vs v4 ablation, backbone init ablation, IL step progression, v=0 stationary eval, discussion and limitations
 - [[findings/traffic-light-domain-shift|Traffic Light Domain-Shift Retrain]] — LISA→rig red/yellow confusion + dark-housing failure; retrained on LISA+BSTLD with new `off` class to retire the HSV gate (draft, 2026-05-07)
 - [[findings/yolov10-bdd13-extension|YOLOv10-13 Extension]] — extended YOLO_BDD's 10-class detector to 13 (deer, cone, barrier) for AutoDrive; mAP50 0.602 across 13 cls, no regression on BDD-10 (0.524→0.527), Grounding DINO auto-labeled deer (2026-05-08)
@@ -168,7 +180,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 
 ---
 
-## Comparisons (6)
+## Comparisons (7)
 
 - [[comparisons/dataset-comparison|Dataset Comparison]] — side-by-side JAAD vs PIE vs ROAD++ capabilities table from SYNTHESIS Part 3
 - [[comparisons/model-comparison|Model Comparison]] — input/output patterns across 11 published models from SYNTHESIS Part 6
@@ -176,6 +188,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[comparisons/openmixer-vs-retinanet|OpenMixer vs 3D-RetinaNet]] — backbone gap analysis: spatial/temporal/semantic trade-offs for MCDM Approach 3
 - [[comparisons/bdd-x-vs-covla|BDD-X vs CoVLA]] — Stage 1 pre-training sources: quality vs scale, DSDAG field mapping, joint training strategy
 - [[comparisons/fusion-for-detection-lit-review|CNN-VLM Fusion Lit Review]] — literature review: fusion methods for detection + constraint reasoning; motivated by Exp2b scalar gate bottleneck (draft, VMCNet first entry)
+- [[comparisons/yolov8x-vs-swin-l-backbone|YOLOv8x vs Swin-L Backbone]] — detection backbone comparison for Frozen-DETR pipeline; Swin-L chosen for Exp2d (attention-native, paper-tested, 58 AP COCO)
 - [[comparisons/slurp-audio-vs-text-oracle|SLURP Audio vs Text Oracle]] — WavLM-Hier on raw audio beats RoBERTa on gold transcripts on every metric (+0.28 Act F1w); prosody carries intent that transcripts discard
 
 ---
