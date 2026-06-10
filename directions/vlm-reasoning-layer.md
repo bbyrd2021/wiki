@@ -3,9 +3,10 @@ type: direction
 title: "VLM Reasoning Layer over 3D-RetinaNet (Approach 8)"
 aliases: ["VLM-as-teacher", "Approach 8", "Moradi 2026-06-02 direction", "VLM reasoning layer"]
 created: 2026-06-04
-updated: 2026-06-04
+updated: 2026-06-10
 sources:
   - "wiki/raw/2026-06-02_moradi_vlm_reasoning_layer.txt"
+  - "wiki/raw/2026-06-10_moradi_prompt_feedback.txt"
 tags: [direction, road-plusplus, vlm, 3d-retinanet, neuro-symbolic, t-norm, staged-experiment, primary-contribution]
 status: complete
 novelty: true
@@ -37,55 +38,43 @@ Therefore the perception backbone must remain spatiotemporal. The 3D-RetinaNet i
 ```
 Video clip [T=8, 600x840]
    │
-   ├──► Frozen 3D-RetinaNet ───► tube boxes + 184-dim logits
-   │       (model_000025.pth, 17.76% agent f-mAP floor)
-   │                                │
-   │                                ▼
-   └──► VLM (frozen or LoRA) ───► structured JSON per agent
-          prompt: frames + boxes + schema       {agent, actions, location,
-          + valid-combination constraints        rationale}
-          (cached once, not regenerated)         │
-                                │                │
-                                ▼                ▼
-                          language embedding   detector logits
-                                  │              │
-                                  └──── fuse ────┘
-                                          │
-                              small trainable head
-                                          │
-                                  re-predicted triplet
-                                          │
-                              (optional) T-norm penalty
+   ├──► Frozen 3D-RetinaNet ─────► tube boxes + 184-dim logits ──┐
+   │       (model_000025.pth, 17.76% agent f-mAP floor)          │
+   │                                                             │
+   └──► Frozen VLM (image + prompt only — NO boxes) ─► structured JSON ──┐
+          prompt: schema + valid-combination constraints                  │
+          (cached once, not regenerated)                                  │
+                                                                          │
+                                                trainable fusion + few-layer head
+                                                                          │
+                                                              re-predicted (agent,
+                                                                  action, location)
+                                                                          │
+                                                            (optional) T-norm penalty
 ```
 
-The fusion is **late** (language embedding × detector logit), not early (image-level patches). Per Moradi: "for now start with VLM generated the response... then use language embedding to fused with output of 3d retina net and then re predict with adding few layer to be ttrained."
+The fusion is **late** (language embedding × detector logit), not early (image-level patches). **The VLM sees the image and the prompt — not boxes.** RetinaNet provides boxes on its own track. The trainable fusion + few-layer head combines both. Per Moradi 2026-06-10: "image goes to VLM and VLM based on prompt provides info we want so be fused with 3d retina net."
 
 ## The Staged Experimental Ladder
 
 Moradi explicitly asked for incremental experiments — *"lets start one by one."* Each stage answers one question before the next is funded.
 
-### Stage 1 — VLM as offline teacher, no training
-- Prompt a VLM with frames + baseline boxes.
-- **Force structured JSON** per agent: `{agent, actions, location, rationale}`. No free-form text.
-- Constraints (valid agent-action combinations from [[concepts/neuro-symbolic-constraints|ROAD-R rules]]) embedded **in the prompt**.
-- Cache the outputs once — regeneration is expensive.
-- Fuse cached VLM output with 3D-RetinaNet detections via a fixed rule (vote / rank-fusion).
-- **Question answered:** does VLM reasoning, used as-is, lift the baseline above 17.76%?
+**Per Moradi 2026-06-10 correction:** there is no "no training" stage. The VLM and 3D-RetinaNet are frozen from day 1; **the fusion module + few-layer head train** in every stage. "Zero-shot" refers only to VLM and RetinaNet being out-of-the-box — the fusion is always learned.
 
-### Stage 2 — Small trainable fusion head
-- Two auxiliary branches, **joint** training:
-  - *Video → Explanation* (consumes cached VLM outputs)
-  - *Video → Triplet* (consumes 3D-RetinaNet outputs)
-- Add a few trainable layers on top of `(language_embedding ⊕ detector_logits)` → re-predict the 184-dim flat target.
-- 3D-RetinaNet and VLM both frozen; only the fusion head trains.
-- **Question answered:** can a tiny learned fusion beat the Stage 1 fixed rule?
+### Stage 1 — Trainable fusion + few-layer head (VLM + RetinaNet both frozen)
+- Image → Frozen VLM (prompt-driven), emits structured JSON per agent: `{agent, actions, location, rationale}`. No free-form text.
+- Image → Frozen 3D-RetinaNet, emits boxes + 184-dim logits.
+- Cache VLM outputs once — regeneration is expensive.
+- **Trainable**: fusion module + few-layer head consuming both `(language_embedding ⊕ detector_logits)` → re-predict 184-dim flat target.
+- Constraints (valid agent-action-location combinations) embedded **in the VLM prompt**.
+- **Question answered:** does fused reasoning + detection beat the bare 17.76% baseline?
 
-### Stage 3 — VLM fine-tuned on driving data
+### Stage 2 — VLM fine-tuned on driving data
 - LoRA-tune the VLM on [[datasets/bdd-x|BDD-X]] then [[datasets/covla|CoVLA]] for explanation style.
-- Plug the driving-tuned VLM back into Stage 2's pipeline.
-- **Question answered:** does a driving-aware VLM produce richer cached outputs that further lift triplet f-mAP?
+- Plug the driving-tuned VLM into Stage 1's pipeline (fusion head re-trained).
+- **Question answered:** does a driving-aware VLM lift duplex / triplet f-mAP further?
 
-### Stage 4 — Distill reasoning into the detector
+### Stage 3 — Distill reasoning into the detector
 - **Contrastive or MSE loss** aligning 3D-RetinaNet tube features ↔ VLM text embeddings.
 - The visual network learns to carry the reasoning internally.
 - **At inference, drop the VLM.** Zero VLM cost in deployment.
@@ -132,27 +121,29 @@ Strategy will be empirical (sweep weights at Stage 2 entry) — no a-priori valu
 | Floor guarantee | None (full retrain) | None (full retrain) | **17.76% (frozen baseline)** |
 | Inference cost | Full VLM | Full VLM + OpenMixer | **Stage 4: detector only (VLM dropped)** |
 
-The defining property of Approach 8: **the baseline cannot regress.** Stage 2's worst case is the fusion head learns the identity (passes detector logits through unchanged), yielding ≥ 17.76%.
+The defining property of Approach 8: **the baseline cannot regress.** Stage 1's worst case is the fusion head learns the identity (passes detector logits through unchanged), yielding ≥ 17.76%.
 
 ## Open Questions for the Meeting
 
-Architectural choices Moradi left open — surface these first:
+Architectural choices Moradi left open or flagged for in-person discussion (per his 2026-06-10 prompt-feedback email):
 
-**VLM selection.** Qwen2.5-VL? Kimi-VL? GPT-4o (API cost)? Affects throughput, fine-tuning feasibility, output stability.
+**VLM input is image + prompt only.** No boxes to VLM. Per Moradi 2026-06-10. Removes "GT boxes to VLM" and "baseline boxes to VLM" from consideration.
 
-**Prompt input.** Frames-only, or frames + rendered box overlays? Single frame or 8-frame clip?
+**Cross-dataset evaluability per prompt field.** For each field the VLM is asked to predict (`agent`, `action`, `location`, `duplex`, `triplet`, `rationale`, plus anything we add), mark which dataset validates it: ROAD-Waymo (structured labels), [[datasets/covla|CoVLA]] (risk score, plain captions), [[datasets/bdd-x|BDD-X]] (action + justification text). Moradi: "what happened to comparison we can have with other dataset? like risk, where are they?"
 
-**Per-agent JSON keying.** How is cached VLM output aligned to tubes at training time — by baseline tube ID, by proposal IoU, by VLM-emitted descriptions?
+**Fields not verifiable by any dataset.** Moradi wants some VLM outputs that no dataset directly validates — qualitative / manual validation only. Discuss which fields and why.
 
-**Stage 1 "no training" fusion rule.** Without a learned head, what combines RetinaNet + VLM into a single triplet prediction? Weighted vote? Rank fusion? Specify before launch.
+**Location list verification per agent type.** Some (agent, location) pairs are nonsensical (e.g., `TL-Pav`). Moradi suspects locations are vehicle-centric; pedestrian/cyclist may need a restricted location vocabulary. Audit per agent before the next prompt revision.
 
-**Language embedding source.** The VLM's own text tower? A separate sentence encoder (CLIP-text, SBERT)?
+**Model design, train-test split, training approach, architecture.** Moradi: "could be topics of tomorrow talks." Not pre-decided.
+
+**VLM selection.** Qwen2.5-VL-7B as starting point.
 
 **Constraint sourcing.** Read ROAD-R rules from the [original ROAD-R logic file](https://github.com/EGiunchiglia/ROAD-R) or derive from `duplex_childs` / `triplet_childs` in the ROAD-Waymo JSON?
 
-**LoRA timing.** Does VLM stay frozen through Stage 2, or does LoRA kick in there already? Moradi mentioned LoRA "to keep it fast" but didn't specify the stage.
+**LoRA timing.** Does VLM stay frozen through Stage 1, or does LoRA kick in there already?
 
-**Aux-loss weighting.** Strategy for balancing `L_explanation`, `L_triplet`, and (Stage 4) `L_contrastive`.
+**Aux-loss weighting.** Strategy for balancing `L_explanation`, `L_triplet`, and (Stage 3) `L_contrastive`.
 
 ## What This Means for Existing Work
 
@@ -169,10 +160,9 @@ Architectural choices Moradi left open — surface these first:
 
 | Stage | Pass criterion |
 |-------|----------------|
-| 1 | Cached-VLM + fixed-fusion eval > 17.76% agent f-mAP on ROAD-Waymo val |
-| 2 | Trained fusion head > Stage 1 by ≥ 2 pp, plus ≥ 2 pp on duplex/triplet |
-| 3 | Driving-tuned VLM > Stage 2 by ≥ 2 pp on duplex/triplet (where language matters most) |
-| 4 | VLM-dropped detector ≥ Stage 3 within 1 pp; demonstrates internalized reasoning |
+| 1 | Trained fusion + few-layer head > 17.76% agent f-mAP on ROAD-Waymo val |
+| 2 | Driving-tuned VLM > Stage 1 by ≥ 2 pp on duplex/triplet (where language matters most) |
+| 3 | VLM-dropped detector ≥ Stage 2 within 1 pp; demonstrates internalized reasoning |
 
 Per-stage logs and metrics commit to `findings/exp5-vlm-reasoning-stage<N>.md` after each gate clears.
 

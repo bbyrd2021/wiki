@@ -1,6 +1,6 @@
 ---
 type: index
-updated: 2026-06-04
+updated: 2026-06-10
 total_pages: 120
 ---
 
