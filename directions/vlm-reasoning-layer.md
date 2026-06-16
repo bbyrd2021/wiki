@@ -3,10 +3,11 @@ type: direction
 title: "VLM Reasoning Layer over 3D-RetinaNet (Approach 8)"
 aliases: ["VLM-as-teacher", "Approach 8", "Moradi 2026-06-02 direction", "VLM reasoning layer"]
 created: 2026-06-04
-updated: 2026-06-10
+updated: 2026-06-15
 sources:
   - "wiki/raw/2026-06-02_moradi_vlm_reasoning_layer.txt"
   - "wiki/raw/2026-06-10_moradi_prompt_feedback.txt"
+  - "wiki/raw/2026-06-11_moradi_prompt_feedback_round2.txt"
 tags: [direction, road-plusplus, vlm, 3d-retinanet, neuro-symbolic, t-norm, staged-experiment, primary-contribution]
 status: complete
 novelty: true
@@ -38,22 +39,24 @@ Therefore the perception backbone must remain spatiotemporal. The 3D-RetinaNet i
 ```
 Video clip [T=8, 600x840]
    │
-   ├──► Frozen 3D-RetinaNet ─────► tube boxes + 184-dim logits ──┐
-   │       (model_000025.pth, 17.76% agent f-mAP floor)          │
-   │                                                             │
-   └──► Frozen VLM (image + prompt only — NO boxes) ─► structured JSON ──┐
-          prompt: schema + valid-combination constraints                  │
-          (cached once, not regenerated)                                  │
-                                                                          │
-                                                trainable fusion + few-layer head
-                                                                          │
-                                                              re-predicted (agent,
-                                                                  action, location)
-                                                                          │
-                                                            (optional) T-norm penalty
+   ├──► Frozen 3D-RetinaNet ─────► tube boxes + 184-dim logits ──────────┐
+   │       (model_000025.pth, 17.76% agent f-mAP floor)                  │
+   │              │                                                      │
+   │              └─ predicted boxes (pseudo-labels) overlaid on frames  │
+   │                          │                                          │
+   └──► image + RetinaNet boxes ──► Frozen VLM ─► structured JSON ───────┤
+          prompt: schema + valid-combination constraints                 │
+          (cached once, not regenerated)                                 │
+                                                                         │
+                                          trainable fusion + few-layer head
+                                                                         │
+                                             re-predicted (agent, action, location,
+                                                          + risk, rationale)
+                                                                         │
+                                                       (optional) T-norm penalty
 ```
 
-The fusion is **late** (language embedding × detector logit), not early (image-level patches). **The VLM sees the image and the prompt — not boxes.** RetinaNet provides boxes on its own track. The trainable fusion + few-layer head combines both. Per Moradi 2026-06-10: "image goes to VLM and VLM based on prompt provides info we want so be fused with 3d retina net."
+The fusion is **late** (language embedding × detector logit), not early (image-level patches). **The VLM sees the image with 3D-RetinaNet's *predicted* boxes overlaid** — pseudo-labels, not ground truth — and reasons over them rather than re-localizing. RetinaNet's logits also feed the fusion head directly on their own track. The trainable fusion + few-layer head combines both. Per Moradi 2026-06-11: "Qwen can be reasoning given detections from retinaNet … not from ground truth … it is psedu-label."
 
 ## The Staged Experimental Ladder
 
@@ -62,11 +65,12 @@ Moradi explicitly asked for incremental experiments — *"lets start one by one.
 **Per Moradi 2026-06-10 correction:** there is no "no training" stage. The VLM and 3D-RetinaNet are frozen from day 1; **the fusion module + few-layer head train** in every stage. "Zero-shot" refers only to VLM and RetinaNet being out-of-the-box — the fusion is always learned.
 
 ### Stage 1 — Trainable fusion + few-layer head (VLM + RetinaNet both frozen)
-- Image → Frozen VLM (prompt-driven), emits structured JSON per agent: `{agent, actions, location, rationale}`. No free-form text.
-- Image → Frozen 3D-RetinaNet, emits boxes + 184-dim logits.
+- Frozen 3D-RetinaNet runs first → boxes + 184-dim logits. Its **predicted** boxes are overlaid on the frames (pseudo-labels, not GT).
+- Image + RetinaNet boxes → Frozen VLM (prompt-driven), emits structured JSON per agent: `{agent, action, location, duplex, triplet, risk, rationale}`. No free-form text.
 - Cache VLM outputs once — regeneration is expensive.
-- **Trainable**: fusion module + few-layer head consuming both `(language_embedding ⊕ detector_logits)` → re-predict 184-dim flat target.
+- **Trainable** (two valid forms, Moradi 2026-06-11): (a) a fusion module + few-layer head consuming `(language_embedding ⊕ detector_logits)`, or (b) fuse internally and train the *remaining RetinaNet layers after the fusion point* instead of bolting on new layers. Either re-predicts the 184-dim flat target.
 - Constraints (valid agent-action-location combinations) embedded **in the VLM prompt**.
+- **Train/test discipline:** fusion trains on the train split; the RetinaNet that supplies boxes is trained on train and inferred on test; the **test split is fixed across every experiment.** Acceptable fallback: a train-trained RetinaNet also supplies boxes for the train split.
 - **Question answered:** does fused reasoning + detection beat the bare 17.76% baseline?
 
 ### Stage 2 — VLM fine-tuned on driving data
@@ -127,13 +131,23 @@ The defining property of Approach 8: **the baseline cannot regress.** Stage 1's 
 
 Architectural choices Moradi left open or flagged for in-person discussion (per his 2026-06-10 prompt-feedback email):
 
-**VLM input is image + prompt only.** No boxes to VLM. Per Moradi 2026-06-10. Removes "GT boxes to VLM" and "baseline boxes to VLM" from consideration.
+**VLM input — RESOLVED (2026-06-11, reverses the 2026-06-10 "no boxes" reading).** The VLM receives **image + 3D-RetinaNet *predicted* boxes (pseudo-labels) + prompt**. It reasons over detector predictions overlaid on the image — *not* ground truth, and it does **not** localize. GT boxes are acceptable only as a high-quality pseudo-label stand-in, but the framing is always "detector predictions." Moradi: "Qwen can be reasoning given detections from retinaNet … not from ground truth … it is psedu-label."
 
-**Cross-dataset evaluability per prompt field.** For each field the VLM is asked to predict (`agent`, `action`, `location`, `duplex`, `triplet`, `rationale`, plus anything we add), mark which dataset validates it: ROAD-Waymo (structured labels), [[datasets/covla|CoVLA]] (risk score, plain captions), [[datasets/bdd-x|BDD-X]] (action + justification text). Moradi: "what happened to comparison we can have with other dataset? like risk, where are they?"
+**Per-field dataset validation — RESOLVED (2026-06-11).** Each prompt field is asked even in the untrained baseline (so any lift from later fine-tuning is attributable — Moradi: "if you ask the risk with un-trained models … no one can say model already knew the risk"):
 
-**Fields not verifiable by any dataset.** Moradi wants some VLM outputs that no dataset directly validates — qualitative / manual validation only. Discuss which fields and why.
+| Prompt field | Validated against | Note |
+|--------------|-------------------|------|
+| `agent` | [[datasets/road-plusplus\|ROAD-Waymo]] | structured label |
+| `action` | ROAD-Waymo (+ [[datasets/bdd-x\|BDD-X]] action text) | structured label |
+| `location` | ROAD-Waymo | scripted from JSON, not VLM-derived |
+| `duplex` | ROAD-Waymo | agent-action |
+| `triplet` | ROAD-Waymo | agent-action-location |
+| `risk` | [[datasets/covla\|CoVLA]] | explicit risk label |
+| `rationale` | BDD-X | justification text |
 
-**Location list verification per agent type.** Some (agent, location) pairs are nonsensical (e.g., `TL-Pav`). Moradi suspects locations are vehicle-centric; pedestrian/cyclist may need a restricted location vocabulary. Audit per agent before the next prompt revision.
+**Fields not verifiable by any dataset.** Moradi wants some VLM outputs that no dataset directly validates — qualitative / manual validation only. "Long discussion, needs talking" — defer to the meeting.
+
+**Location list — RESOLVED (2026-06-11).** The location vocabulary is scripted directly from the ROAD-Waymo JSON (not VLM-derived from `xy,wh`), which was Moradi's actual concern. The 86-triplet whitelist already excludes nonsensical pairs: TL has zero triplets; Ped triplets use only sidewalk / junction / crosswalk. Moradi: "if it come from dataset I'm fine." Agent list, action list, valid duplexes, valid triplets all approved.
 
 **Model design, train-test split, training approach, architecture.** Moradi: "could be topics of tomorrow talks." Not pre-decided.
 
