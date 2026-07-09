@@ -1,7 +1,7 @@
 ---
 type: index
-updated: 2026-06-10
-total_pages: 120
+updated: 2026-07-06
+total_pages: 121
 ---
 
 # Research Wiki — Index
@@ -156,7 +156,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 
 ---
 
-## Findings (19)
+## Findings (20)
 
 - [[findings/jaad-gaze-findings|JAAD Gaze Findings]] — walking+looking → 95.7% cross at decision_point; standing+not-looking → 44.9% (lowest ambiguity pair)
 - [[findings/pie-gaze-reversal|PIE Gaze Reversal]] — walking+not-looking → 74.1% cross (higher than walking+looking 56%); gaze sign reverses from JAAD
@@ -172,6 +172,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[findings/exp2f-flat-head|Exp2f Flat 184-dim Head]] — fixes score-localization decorrelation: single `nn.Linear(256, 184)` with focal loss on ALL 300 queries; f-mAP: agent 4.40% (3x over exp2e); matched action mAP 0.199 (ep18 best)
 - [[findings/exp2g-msdetr|Exp2g MS-DETR]] — full MS-DETR: two-stage (900 queries) + O2M (k=6) + encoder loss + softmax agent + 4D ref points; 358.7M params; systematic reference replication (training, May 26)
 - [[findings/exp2-series-narrative|Exp2 Series Narrative]] — connected story of exp2→2b→2c→2d→2e→2f→2g: resolution + negative supervision + query coverage, how each experiment led to the next
+- [[findings/exp5-detection-steered-prompting|Exp5 Detection-Steered Prompting]] — detector priors in the Qwen prompt lift every head vs from-scratch (agent 5.6→12.9) but steered Qwen still loses to the detector-only control on all heads (agent 14.6, triplet 7.5 vs 2.9); hard labels waste the detector's continuous logits → motivates trained fusion (Approach 8)
 - [[findings/sparse-temporal-pie-results|SparseTemporalPIE Full Results]] — complete narrative: SOTA tables (PIE + JAAD), v3 vs v4 ablation, backbone init ablation, IL step progression, v=0 stationary eval, discussion and limitations
 - [[findings/traffic-light-domain-shift|Traffic Light Domain-Shift Retrain]] — LISA→rig red/yellow confusion + dark-housing failure; retrained on LISA+BSTLD with new `off` class to retire the HSV gate (draft, 2026-05-07)
 - [[findings/yolov10-bdd13-extension|YOLOv10-13 Extension]] — extended YOLO_BDD's 10-class detector to 13 (deer, cone, barrier) for AutoDrive; mAP50 0.602 across 13 cls, no regression on BDD-10 (0.524→0.527), Grounding DINO auto-labeled deer (2026-05-08)
