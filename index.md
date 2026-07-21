@@ -1,7 +1,7 @@
 ---
 type: index
-updated: 2026-07-06
-total_pages: 121
+updated: 2026-07-20
+total_pages: 122
 ---
 
 # Research Wiki — Index
@@ -112,6 +112,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[papers/occlusion-graph-2025|Occlusion Graph 2025]] — graph autoencoder for partial occlusion; +6% on JAAD under occlusion (EAAI 2025)
 - [[papers/occlusion-diffusion-2024|Occlusion Diffusion 2024]] — diffusion model for trajectory reconstruction under occlusion; +5% (arXiv:2511.00858)
 - [[papers/efficientpie-ijcai-2025|EfficientPIE — IJCAI 2025]] — lightweight single-frame intent model; upstream of local SparseTemporalPIE work
+- [[papers/byrd-2026-sparsetemporalpie|Byrd 2026 — SparseTemporalPIE]] — the lab's own IEEE submission; 0.926 acc / 0.947 AUC PIE SOTA; page carries Dr. Qingge's review + code-verified t=0 analysis (under review)
 
 ### PIE
 - [[papers/rasouli-2024-encore|Rasouli 2024 — ENCORE]] — scale- and motion-aware trajectory prediction; stratified evaluation paradigm (ICRA 2024)

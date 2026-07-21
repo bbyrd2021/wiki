@@ -3,7 +3,7 @@ type: method
 title: "SparseTemporalPIE (v3 / v4)"
 aliases: ["SparseTemporalPIE", "sparse temporal pie", "v3", "v4"]
 created: 2026-04-07
-updated: 2026-04-07
+updated: 2026-07-20
 sources: ["EfficientPIE/README.md", "EfficientPIE/docs/RESULTS.md"]
 tags: [method, pie, jaad, cross-attention, pose, efficientnet, local-research]
 status: complete
@@ -15,6 +15,8 @@ best_auc_pie: 0.9468
 # SparseTemporalPIE
 
 Local research contribution (Brandon Byrd, Abel Abebe Bzuayene — xDI Lab, NC A&T). Extends the IJCAI-25 EfficientPIE paper with three additional information streams.
+
+Written up as an IEEE paper: [[papers/byrd-2026-sparsetemporalpie|SparseTemporalPIE (IEEE, under review 2026)]] — includes Dr. Qingge's code-verified review notes (t = 0 attention degeneracy, Eq. (1) errata).
 
 ## v3 Architecture (Best Variant)
 

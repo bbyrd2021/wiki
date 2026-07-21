@@ -581,3 +581,10 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Pages added: 1 (`findings/exp5-detection-steered-prompting.md`); index Findings count 19→20.
 - Sources: `ROAD_Reason/experiments/exp5_qwen_reasoning/{qwen_infer,vlm_io,eval_qwen}.py`, `results_steered.json`, `results_nms_fixed.json`; `exp6_detection_steered/eval.py`, `results_detector_only.json`.
 - Summary: Full-val (9,504 frames) detection-steered prompting — detector top-1 agent/action/location + confidence injected into the Qwen prompt as priors. Plain→steered lifts every head +5–8 (agent 5.6→12.9, loc 0.8→9.1), but the detector-only control over the same top-40 boxes beats steered Qwen on every head (agent 14.6, action 12.2, loc 11.8, duplex 10.3, triplet 7.5). Qwen relays the detector, doesn't correct it; gap widest on the relational heads. Caveat: partly a scoring-format artifact (hard labels vs continuous logits under AP). Motivates the trained-fusion step (Approach 8 Stage 1) whose floor is the detector's 14.6 agent. Basis for the 2026-07-06 Monday update to Dr. Moradi.
+
+## [2026-07-20] INGEST — SparseTemporalPIE IEEE paper draft + Qingge review
+
+- Pages created: 1 (`papers/byrd-2026-sparsetemporalpie.md`)
+- Pages updated: 4 (`index.md`, `methods/sparse-temporal-pie.md`, `projects/efficient-pie.md`, `log.md`)
+- Source: `wiki/raw/SparseTemporalPIE_IEEE_draft.pdf` (copied from ~/Downloads, circulated by Dr. Moradi)
+- Summary: The lab's own paper enters the wiki as a first-class node, carrying Dr. Qingge's 2026-07-20 review and the code-verified responses: Eq. (1) is undefined at t=0 (dataloader special-cases I_ctx(0)=[0], current frame as sole key/value); "residual passthrough" is imprecise (degenerate unit attention weight → learned linear residual, not identity); bonus erratum I_ctx(14)=[0,4,8,13] in code vs [0,4,9,13] in text. Tables III/IV judged non-repetitive (orthogonal ablation axes, one shared anchor row). Dense-sampling ablation deferred by user.

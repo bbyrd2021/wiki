@@ -3,7 +3,7 @@ type: project
 title: "EfficientPIE / SparseTemporalPIE"
 aliases: ["EfficientPIE", "SparseTemporalPIE", "sparse temporal pie"]
 created: 2026-04-07
-updated: 2026-04-07
+updated: 2026-07-20
 sources:
   - "EfficientPIE/README.md"
   - "EfficientPIE/docs/RESULTS.md"
@@ -17,6 +17,7 @@ status: complete
 Fork of the IJCAI-25 paper "EfficientPIE" extended with multi-frame cross-attention, pose velocity, and explicit motion/behavioral context. Authors: Brandon Byrd, Abel Abebe Bzuayene — xDI Lab, NC A&T State University.
 
 **Repo:** `/data/repos/EfficientPIE/`
+**Paper:** [[papers/byrd-2026-sparsetemporalpie|SparseTemporalPIE (IEEE, under review 2026)]] — draft circulated by Dr. Moradi; reviewed by Dr. Qingge 2026-07-20 (see the paper page for code-verified responses).
 
 ## Overview
 
