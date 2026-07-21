@@ -49,11 +49,11 @@ Three points, checked against `EfficientPIE/models/SparseTemporalPIE_v3.py` and 
 
 ### 2. Sparse vs dense sampling ablation
 
-Suggested "if time permits." Deferred for now (user decision 2026-07-20). Infrastructure note: the absolute-frame-ID keypoint cache was designed so any sampling protocol runs without recomputation, and `n_context` is a dataset parameter — the run is cheap to set up if the paper gets a revision cycle.
+Suggested "if time permits." **Not done for this submission** — paper due 2026-07-21, no time to train/evaluate the variants; flagged as future work in the reply to Dr. Qingge. Infrastructure note: the absolute-frame-ID keypoint cache was designed so any sampling protocol runs without recomputation, and `n_context` is a dataset parameter — the run is cheap to set up for the next iteration.
 
 ### 3. Are Tables III and IV repetitive?
 
-No — orthogonal ablation axes (III: architecture at fixed init; IV: initialization at fixed architecture) — but they share the full-v3 anchor row (0.9261 / 0.9468), which reads as repetition. Only three distinct runs span both tables, so merging into one 3-row ablation table (variant | params | best step | test acc | AUC) is the cleanest response; a caption cross-reference is the minimal fix.
+No — orthogonal ablation axes (III: architecture at fixed init; IV: initialization at fixed architecture) — but they share the full-v3 anchor row (0.9261 / 0.9468), which reads as repetition. **Decision (2026-07-20): tables stay as-is for the submission** — the shared row is the intentional reference point for each axis, and the deadline (due 2026-07-21) rules out restructuring. (A merged 3-row ablation table remains an option for a later revision.)
 
 ## Relation to wiki pages
 
