@@ -3,11 +3,13 @@ type: direction
 title: "VLM Reasoning Layer over 3D-RetinaNet (Approach 8)"
 aliases: ["VLM-as-teacher", "Approach 8", "Moradi 2026-06-02 direction", "VLM reasoning layer"]
 created: 2026-06-04
-updated: 2026-06-15
+updated: 2026-08-12
 sources:
   - "wiki/raw/2026-06-02_moradi_vlm_reasoning_layer.txt"
   - "wiki/raw/2026-06-10_moradi_prompt_feedback.txt"
   - "wiki/raw/2026-06-11_moradi_prompt_feedback_round2.txt"
+  - "ROAD_Reason/experiments/exp8_joint_lora"
+  - "ROAD_Reason/experiments/exp7_bddx_lora"
 tags: [direction, road-plusplus, vlm, 3d-retinanet, neuro-symbolic, t-norm, staged-experiment, primary-contribution]
 status: complete
 novelty: true
@@ -77,6 +79,7 @@ Moradi explicitly asked for incremental experiments — *"lets start one by one.
 - LoRA-tune the VLM on [[datasets/bdd-x|BDD-X]] then [[datasets/covla|CoVLA]] for explanation style.
 - Plug the driving-tuned VLM into Stage 1's pipeline (fusion head re-trained).
 - **Question answered:** does a driving-aware VLM lift duplex / triplet f-mAP further?
+- **Superseded in execution (2026-07-27):** the sequential BDD-X→CoVLA legs were replaced by **joint interleaved training** (`exp8_joint_lora`, 1 sample/corpus/step over ROAD SFT + BDD-X + CoVLA) after the BDD-X-only leg (`exp7_bddx_lora`) failed the gate — see status ledger below.
 
 ### Stage 3 — Distill reasoning into the detector
 - **Contrastive or MSE loss** aligning 3D-RetinaNet tube features ↔ VLM text embeddings.
@@ -179,6 +182,18 @@ Architectural choices Moradi left open or flagged for in-person discussion (per 
 | 3 | VLM-dropped detector ≥ Stage 2 within 1 pp; demonstrates internalized reasoning |
 
 Per-stage logs and metrics commit to `findings/exp5-vlm-reasoning-stage<N>.md` after each gate clears.
+
+## Status Ledger (as of 2026-08-12)
+
+| Date | Event |
+|------|-------|
+| 2026-07-24 | Moradi green-lights Stage 2; zero-shot fusion kept as named baseline "Baseline Fusion — Zero-shot VLM" |
+| 2026-08-02 | **exp7 BDD-X-only LoRA leg evaluated:** fused `results_bddx_lora_ep*.json` beats zero-shot fusion but **not the detector-only control — gate not met.** Diagnostic: tuned language ≈ zero-lang ablation |
+| 2026-07-27 | Moradi supersedes sequential BDD-X→CoVLA with **joint interleaved training** (1 sample/corpus/step: ROAD SFT + BDD-X + CoVLA) → `exp8_joint_lora` |
+| 2026-08-05 | exp8 joint LoRA trained (28,788 steps / 3 epochs, ~28 h). **Epoch 1 kept** (joint val loss 0.432; epochs 2/3 overfit at 0.463/0.481) → `merged_checkpoint_9596` |
+| 2026-08-09 | Joint re-cache: train subset (2/12 shards, 9,596 frames) done. Parser-salvage fix added (`vlm_io._salvage_boxes`) for the joint model's occasionally corrupted JSON; train rationale embeddings rebuilt post-fix (373,730 boxes / 9,560 frames). Val re-cache killed at ~24% by host reboot |
+| 2026-08-10 | Val re-cache relaunched (2 GPU shards, resume from cache); ~93% done 2026-08-12, ETA same evening |
+| queued | `reparse_cache.py` (parser parity across pre/post-fix frames) → exp5 VLM-only eval → val SigLIP embeddings → 20-epoch fusion-head train on joint cache → fused evals vs detector-only control |
 
 ## Related
 
