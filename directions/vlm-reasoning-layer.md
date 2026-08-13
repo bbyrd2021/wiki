@@ -193,7 +193,8 @@ Per-stage logs and metrics commit to `findings/exp5-vlm-reasoning-stage<N>.md` a
 | 2026-08-05 | exp8 joint LoRA trained (28,788 steps / 3 epochs, ~28 h). **Epoch 1 kept** (joint val loss 0.432; epochs 2/3 overfit at 0.463/0.481) → `merged_checkpoint_9596` |
 | 2026-08-09 | Joint re-cache: train subset (2/12 shards, 9,596 frames) done. Parser-salvage fix added (`vlm_io._salvage_boxes`) for the joint model's occasionally corrupted JSON; train rationale embeddings rebuilt post-fix (373,730 boxes / 9,560 frames). Val re-cache killed at ~24% by host reboot |
 | 2026-08-10 | Val re-cache relaunched (2 GPU shards, resume from cache); ~93% done 2026-08-12, ETA same evening |
-| queued | `reparse_cache.py` (parser parity across pre/post-fix frames) → exp5 VLM-only eval → val SigLIP embeddings → 20-epoch fusion-head train on joint cache → fused evals vs detector-only control |
+| 2026-08-12→13 | Val re-cache finished clean; reparse (19,099 files, +7,198 boxes); full queued chain executed same night |
+| 2026-08-13 | **Stage-2 gate result:** joint fused best agent 14.69 vs detector-only control 14.62 — a tie; relational heads at/below control; zero-language ablation (14.76) beats every language-carrying fusion. **Gate not met.** See [[findings/exp8-joint-lora-fusion\|Exp8 Joint-LoRA Fusion]] |
 
 ## Related
 
