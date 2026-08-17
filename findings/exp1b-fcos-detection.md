@@ -3,7 +3,7 @@ type: finding
 title: "Exp1b — FCOS Dense Detection Design (ROAD-Waymo)"
 aliases: ["exp1b", "exp1b fcos", "dense detection exp1b"]
 created: 2026-04-17
-updated: 2026-04-21
+updated: 2026-08-17
 sources:
   - "ROAD_Reason/experiments/exp1b_road_r/model.py"
   - "ROAD_Reason/experiments/exp1b_road_r/assign.py"
@@ -282,7 +282,7 @@ This is the root motivation for Exp2 (DETR-style set prediction). See [[findings
 **Triplet** (17.5% mAP, 85/86 classes seen):
 - Coverage greatly improved vs Exp1 (was 8.8% with oracle boxes)
 
-**Constraint violations:** 0.29% of fg token predictions violate duplex/triplet constraints — t-norm is working effectively.
+**Constraint violations:** 0.29% of fg token predictions violate duplex/triplet constraints. **⚠ 2026-08-17: rate measured against the mis-indexed JSON childs arrays — see [[findings/road-waymo-childs-mis-indexed|the childs bug]]; not evidence the t-norm worked.**
 
 ---
 

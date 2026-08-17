@@ -1,7 +1,7 @@
 ---
 type: index
-updated: 2026-08-13
-total_pages: 123
+updated: 2026-08-17
+total_pages: 124
 ---
 
 # Research Wiki — Index
@@ -157,7 +157,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 
 ---
 
-## Findings (21)
+## Findings (22)
 
 - [[findings/jaad-gaze-findings|JAAD Gaze Findings]] — walking+looking → 95.7% cross at decision_point; standing+not-looking → 44.9% (lowest ambiguity pair)
 - [[findings/pie-gaze-reversal|PIE Gaze Reversal]] — walking+not-looking → 74.1% cross (higher than walking+looking 56%); gaze sign reverses from JAAD
@@ -175,6 +175,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[findings/exp2-series-narrative|Exp2 Series Narrative]] — connected story of exp2→2b→2c→2d→2e→2f→2g: resolution + negative supervision + query coverage, how each experiment led to the next
 - [[findings/exp5-detection-steered-prompting|Exp5 Detection-Steered Prompting]] — detector priors in the Qwen prompt lift every head vs from-scratch (agent 5.6→12.9) but steered Qwen still loses to the detector-only control on all heads (agent 14.6, triplet 7.5 vs 2.9); hard labels waste the detector's continuous logits → motivates trained fusion (Approach 8)
 - [[findings/exp8-joint-lora-fusion|Exp8 Joint-LoRA Fusion]] — joint interleaved LoRA (ROAD+BDD-X+CoVLA) is the best VLM variant yet (VLM-only agent 5.6→7.1) but fused f-mAP still ties the detector-only control (14.69 vs 14.62); zero-language ablation beats every language-carrying fusion (14.76) — the language pathway carries ≈ no signal the detector logits lack
+- [[findings/road-waymo-childs-mis-indexed|ROAD-Waymo Childs Arrays Mis-Indexed]] — the JSON's duplex/triplet_childs are fossils of the original ROAD's index space (20/39, 6/68 decode valid); every prior loss-side t-norm run penalized 29/49 valid duplexes and 80/86 valid triplets; exp2f's 80.09% triplet violation rate is mostly artifact; corrected sets in exp9 constraints_verified.json
 - [[findings/sparse-temporal-pie-results|SparseTemporalPIE Full Results]] — complete narrative: SOTA tables (PIE + JAAD), v3 vs v4 ablation, backbone init ablation, IL step progression, v=0 stationary eval, discussion and limitations
 - [[findings/traffic-light-domain-shift|Traffic Light Domain-Shift Retrain]] — LISA→rig red/yellow confusion + dark-housing failure; retrained on LISA+BSTLD with new `off` class to retire the HSV gate (draft, 2026-05-07)
 - [[findings/yolov10-bdd13-extension|YOLOv10-13 Extension]] — extended YOLO_BDD's 10-class detector to 13 (deer, cone, barrier) for AutoDrive; mAP50 0.602 across 13 cls, no regression on BDD-10 (0.524→0.527), Grounding DINO auto-labeled deer (2026-05-08)

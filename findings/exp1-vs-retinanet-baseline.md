@@ -3,7 +3,7 @@ type: finding
 title: "Exp1 Qwen2.5-VL vs 3D-RetinaNet Baseline — ROAD-Waymo Val"
 aliases: ["exp1 results", "qwen vs retinanet", "road-waymo baseline comparison"]
 created: 2026-04-16
-updated: 2026-04-16
+updated: 2026-08-17
 sources:
   - "ROAD_Reason/experiments/exp1_road_r/logs/eval_results.json"
   - "PedestrianIntent++/ROAD_plus_plus_Baseline/output/baseline_val_metrics.csv"
@@ -49,7 +49,7 @@ Root cause: the action head has near-zero recall on rare classes (`IncatLft`, `T
 ### 3. T-norm had negligible effect in both models
 - RetinaNet: Gödel t-norm changed action mAP by −0.07pp (effectively zero)
 - Exp1: logged L_tnorm ≈ 0.00005 throughout (1000× smaller than L_cls)
-- Constraint violation rate at eval: **0.02%** — the model almost never co-predicts invalid pairs
+- Constraint violation rate at eval: **0.02%** — the model almost never co-predicts invalid pairs. **⚠ 2026-08-17: measured against the mis-indexed JSON childs arrays; the t-norm training here also penalized 29/49 valid duplexes and 80/86 valid triplets — see [[findings/road-waymo-childs-mis-indexed|the childs bug]]. The Gödel columns in the table above are not valid t-norm results.**
 - Likely explanation: with ViT frozen and conservative sigmoid heads, predictions are low-confidence on rare classes, trivially satisfying Łukasiewicz constraints of the form `p(A) + p(B) ≤ 1`
 
 ### 4. Class imbalance is the core problem

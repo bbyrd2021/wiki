@@ -156,7 +156,7 @@ Identity-match precedence (used by `wiki.py bud-match` and by `scaffold paper`):
 
 ## Operations — Skills
 
-The four core operations are implemented as **project skills** under `.claude/skills/`. Each skill is a thin instruction layer over the deterministic CLI at `.claude/scripts/wiki.py`. Karpathy's rule: thin harness, fat skills.
+The five core operations are implemented as **project skills** under `.claude/skills/`. Each skill is a thin instruction layer over the deterministic CLI at `.claude/scripts/wiki.py` (where state mutation is involved). Karpathy's rule: thin harness, fat skills.
 
 | Operation | Slash command | Skill file | What it does |
 |-----------|--------------|------------|--------------|
@@ -164,6 +164,7 @@ The four core operations are implemented as **project skills** under `.claude/sk
 | Query  | `/wiki-query "<question>"` | `.claude/skills/wiki-query/SKILL.md` | Search wiki, read top hits, synthesize answer with `[[wikilink]]` citations |
 | Lint   | `/wiki-lint` | `.claude/skills/wiki-lint/SKILL.md` | Run health check; triage & fix orphans, broken links, missing frontmatter |
 | Bud harvest | `/wiki-bud-from-paper <slug>` | `.claude/skills/wiki-bud-from-paper/SKILL.md` | Walk a paper's references, mint ≤15 stub buds for cited papers in lab themes |
+| Diagram | `/wiki-diagram [slug] "<desc>"` | `.claude/skills/wiki-diagram/SKILL.md` | Add a Mermaid block (default; renders in Obsidian + GitHub) or an Excalidraw stub (Obsidian-only sketch) to a page. Picks the diagram type from intent. Pure content, no CLI backing. |
 
 ### CLI (`wiki.py`) subcommands
 
@@ -209,6 +210,8 @@ Ingest accepts a path, URL, or no argument (then `ls -lt` to propose candidates)
 4. **Decision moment semantics differ:** JAAD uses `decision_point`; PIE uses `critical_point`. They are conceptually similar but protocol-different — `critical_point` is defined by the human experiment clip end, `decision_point` is annotator-marked.
 
 5. **Appearance attributes in JAAD are unused.** All 24 binary per-frame appearance attributes in `annotations_appearance/` were unused by every paper in the surveyed literature (2022–2025). This is a research opportunity.
+
+6. **Never use ROAD-Waymo's `duplex_childs`/`triplet_childs` arrays.** They are mis-indexed fossils of the original ROAD's label ordering (only 20/39 and 6/68 decode to valid compositions — see [[findings/road-waymo-childs-mis-indexed]]). Valid-composition sets must be derived from the `duplex_labels`/`triplet_labels` strings (49/86); verified sets live in `ROAD_Reason/experiments/exp9_joint_heterogeneous/constraints_verified.json`. All pre-2026-08-17 t-norm numbers (exp1/exp1b violation rates, Gödel comparison columns, exp2f's 80.09%) are tainted — do not quote them as constraint evidence.
 
 ---
 
