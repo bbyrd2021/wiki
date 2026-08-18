@@ -143,7 +143,7 @@ tags: [paper, bud]
 
 Identity-match precedence (used by `wiki.py bud-match` and by `scaffold paper`):
 1. Exact `arxiv` match
-2. Exact `(surname, year)` match
+2. `(surname, year)` match **verified by title overlap** (Jaccard ≥ 0.3 when a title is given; a bare unique surname+year matches only when the caller supplies no title — common surnames false-merge otherwise, see log 2026-08-18)
 3. Fuzzy title token overlap (Jaccard ≥ 0.5)
 
 **Promotion:** when a future ingest matches an existing bud, `wiki.py scaffold paper` refuses to overwrite and points to `wiki.py bud-promote <slug>`. Promote flips `status: bud → draft`, preserves `citing` / `## Cited by` / `created` (the seed date is graph history). The ingest agent then edits the body and flips status to `complete` as usual. Slug never changes — inbound wikilinks survive.

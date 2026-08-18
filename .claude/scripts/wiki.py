@@ -234,7 +234,17 @@ def _match_bud_or_paper(root: Path, *, arxiv: str = "", author: str = "",
                        year: str = "", title: str = "") -> tuple[str, str]:
     """
     Find a matching paper page. Returns (slug, status) or ("", "") if no match.
-    Precedence: exact arXiv → exact (surname, year) → fuzzy title (Jaccard ≥ 0.5).
+    Precedence: exact arXiv → (surname, year) verified by title overlap →
+    fuzzy title (Jaccard ≥ 0.5).
+
+    A (surname, year) hit alone is NOT sufficient when a title is available:
+    common surnames (Wang, He, Li, ...) make surname+year non-unique in the
+    wild, and an index that happens to hold exactly one candidate must not
+    short-circuit the title check (2026-08-18: this false-merged InternVideo
+    into wang-2022-bevt and ImageMAE into he-2022-ista-net during bud
+    harvests). Candidates — one or many — must clear Jaccard ≥ 0.3 against
+    the given title. Only a caller that supplies no title at all falls back
+    to trusting a unique (surname, year).
     """
     idx = _paper_index(root)
     if arxiv:
@@ -244,19 +254,22 @@ def _match_bud_or_paper(root: Path, *, arxiv: str = "", author: str = "",
     if author and year:
         surname = _normalize_surname(author)
         candidates = idx["by_author_year"].get((surname, str(year).strip()), [])
-        if len(candidates) == 1:
-            slug = candidates[0]
-            return slug, idx["by_slug"][slug].get("status", "")
-        if len(candidates) > 1 and title:
-            target = set(_title_tokens(title))
-            best, best_score = "", 0.0
-            for c in sorted(candidates):
-                cand = set(_title_tokens(idx["by_slug"][c].get("title", "")))
-                s = _jaccard(target, cand)
-                if s > best_score:
-                    best, best_score = c, s
-            if best and best_score >= 0.3:
-                return best, idx["by_slug"][best].get("status", "")
+        if candidates:
+            if title:
+                target = set(_title_tokens(title))
+                best, best_score = "", 0.0
+                for c in sorted(candidates):
+                    cand = set(_title_tokens(idx["by_slug"][c].get("title", "")))
+                    s = _jaccard(target, cand)
+                    if s > best_score:
+                        best, best_score = c, s
+                if best and best_score >= 0.3:
+                    return best, idx["by_slug"][best].get("status", "")
+                # surname+year hit but title disagrees: not a match here;
+                # fall through to the generic fuzzy-title tier below.
+            elif len(candidates) == 1:
+                slug = candidates[0]
+                return slug, idx["by_slug"][slug].get("status", "")
     if title:
         target = set(_title_tokens(title))
         if target:
