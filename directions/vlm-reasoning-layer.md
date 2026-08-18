@@ -207,3 +207,4 @@ Per-stage logs and metrics commit to `findings/exp5-vlm-reasoning-stage<N>.md` a
 - [[concepts/neuro-symbolic-constraints|Neuro-Symbolic Constraints]] — ROAD-R rules, both prompt-side and loss-side
 - [[findings/exp2f-flat-head|Exp2f Flat-Head]] — base loss design candidate for Stage 2
 - [[datasets/road-plusplus|ROAD++]] | [[datasets/bdd-x|BDD-X]] | [[datasets/covla|CoVLA]]
+- [[papers/wang-2024-internvideo2|InternVideo2]] | [[papers/tong-2022-videomae|VideoMAE]] — Moradi's 2026-08-18 pointers: text-aligned encoder for the contrastive-phrase head, and the fallback-backbone family

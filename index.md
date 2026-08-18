@@ -1,7 +1,7 @@
 ---
 type: index
-updated: 2026-08-17
-total_pages: 124
+updated: 2026-08-18
+total_pages: 126
 ---
 
 # Research Wiki — Index
@@ -64,7 +64,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 
 ---
 
-## Papers (33)
+## Papers (35)
 
 ### Causal Theory
 - [[papers/pearl-2009-causality|Pearl 2009 — Causality]] — DAGs, SCMs, do-calculus, d-separation, counterfactuals; theoretical foundation for DSDAG; includes custom causal graph design thought for ROAD-Waymo
@@ -123,6 +123,8 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[papers/ssl-lanes-2023|SSL-Lanes 2023]] — SSL pretraining on PIE OBD; +4% intent accuracy from self-supervised pretraining (CoRL 2023)
 
 ---
+- [[papers/wang-2024-internvideo2|Wang 2024 — InternVideo2]] — 6B three-stage ViFM (masked distillation → video-audio-speech-text contrastive → LLM); the text-aligned encoder candidate for Moradi's contrastive-phrase head; K400 92.1 (ECCV 2024)
+- [[papers/tong-2022-videomae|Tong 2022 — VideoMAE]] — tube masking @ 90-95% makes plain-ViT masked video pretraining work on tiny datasets (3.5k videos); domain-matched SSVP recipe for a ROAD-Waymo backbone; V1 of Moradi's "VideoMAE V2" pointer (NeurIPS 2022)
 
 ## Methods (12)
 
