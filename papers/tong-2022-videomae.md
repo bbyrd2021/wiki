@@ -47,5 +47,6 @@ Video's two temporal properties break naive MAE: **redundancy** (semantics vary 
 
 - [[papers/wang-2024-internvideo2|InternVideo2]] — uses VideoMAEv2-g as its stage-1 motion teacher; the other Moradi backbone pointer
 - [[directions/vlm-reasoning-layer|Approach 8]] — fallback-backbone context (status ledger, 2026-08-18)
-- [[papers/bardes-2023-jepa|V-JEPA]] / [[papers/maes-2026-lewm|LeWM]] — the predict-in-latent-space alternatives to reconstruct-in-pixel-space
+- [[papers/bardes-2023-jepa|V-JEPA]] — the direct predict-in-latent-space counterpart (cites/benchmarks against masked-pixel video methods)
+- [[papers/maes-2026-lewm|LeWM]] — same axis, no citation link: LeWM's own taxonomy is reconstruction-based vs reconstruction-free, and its Tab. 7 ablation finds adding a reconstruction loss does not improve downstream control — the empirical form of the pixel-reconstruction-vs-latent-prediction dispute this paper sits on the other side of
 - [[concepts/encoder-collapse|Encoder Collapse]] — the frozen-feature failure mode any backbone swap must clear
