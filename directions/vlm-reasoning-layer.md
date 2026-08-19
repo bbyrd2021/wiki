@@ -3,7 +3,7 @@ type: direction
 title: "VLM Reasoning Layer over 3D-RetinaNet (Approach 8)"
 aliases: ["VLM-as-teacher", "Approach 8", "Moradi 2026-06-02 direction", "VLM reasoning layer"]
 created: 2026-06-04
-updated: 2026-08-12
+updated: 2026-08-19
 sources:
   - "wiki/raw/2026-06-02_moradi_vlm_reasoning_layer.txt"
   - "wiki/raw/2026-06-10_moradi_prompt_feedback.txt"
@@ -195,6 +195,8 @@ Per-stage logs and metrics commit to `findings/exp5-vlm-reasoning-stage<N>.md` a
 | 2026-08-10 | Val re-cache relaunched (2 GPU shards, resume from cache); ~93% done 2026-08-12, ETA same evening |
 | 2026-08-12→13 | Val re-cache finished clean; reparse (19,099 files, +7,198 boxes); full queued chain executed same night |
 | 2026-08-13 | **Stage-2 gate result:** joint fused best agent 14.69 vs detector-only control 14.62 — a tie; relational heads at/below control; zero-language ablation (14.76) beats every language-carrying fusion. **Gate not met.** See [[findings/exp8-joint-lora-fusion\|Exp8 Joint-LoRA Fusion]] |
+| 2026-08-17→19 | **Exp9 attribution grid complete** (heads not text, strict alternation, corrected t-norm, Moradi head-warmup): structured heads ≈ detector on agent (14.51 vs 14.62); corrected t-norm binds (violations →0, duplex +0.5); **language co-training degrades every head** (R3 agent 11.80). Gate not met → direction changes per Moradi 2026-08-18 branch. See [[findings/exp9-attribution-grid\|Exp9 Attribution Grid]] |
+| next | Contrastive phrase head (Moradi 2026-08-18 suggestion): frozen [[papers/wang-2024-internvideo2\|InternVideo2]]-clip features + phrase-space projection — the one untested language mechanism |
 
 ## Related
 
