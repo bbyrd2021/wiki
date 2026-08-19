@@ -64,7 +64,7 @@ Adding the BDD-X/CoVLA LM legs (strict alternation, shared ViT LoRA, reduced
 exposure via warmup) degraded every ROAD head: agent 14.51→11.80, duplex
 7.47→6.23, triplet 4.73→3.05, and even constraint compliance worsened
 (violations 17.7→25.9% duplex). The language gradients actively pulled the
-shared visual representation away from what the detection head needs. This
+shared visual representation away from what the detection head needs. **Reverse check (2026-08-19, all 795 held-out language val samples):** the interference is strongly asymmetric — R3/R4 keep most language capability (BDD-X val loss 0.99/0.98 vs exp8's language-only 0.87 vs base 2.39; CoVLA 0.57/0.62 vs 0.31 vs 2.05) while vision paid ~2.7 agent points. The shared representation resolved the objective competition in language's favor, at the vision task's expense. This
 completes a three-way negative on language for this task: inference-time
 fusion adds nothing ([[findings/exp8-joint-lora-fusion|exp8]]), text-delivered
 supervision underperforms heads (point 1), and now training-time co-training
