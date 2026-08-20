@@ -3,7 +3,7 @@ type: finding
 title: "Exp2 — DETR-Style Tube Detection on ROAD-Waymo"
 aliases: ["exp2", "exp2 detr", "detr road-waymo"]
 created: 2026-04-21
-updated: 2026-04-24
+updated: 2026-05-20
 sources:
   - "ROAD_Reason/experiments/exp2_detr_qwen/model.py"
   - "ROAD_Reason/experiments/exp2_detr_qwen/matcher.py"
@@ -262,10 +262,17 @@ The previous "124.3% agent_ness mAP" was not a normalization bug — it was 1.24
 
 ---
 
+## Post-Mortem: Missing Negative Supervision (identified May 2026)
+
+The 0.63% agent f-mAP was primarily caused by **missing negative supervision on unmatched queries**, not localization quality. The `_classification_loss` only applied focal loss to the ~20 matched queries; the other ~80 unmatched queries (100 queries in exp2) received zero gradient on all 5 classification heads. Their class scores drifted to near-saturation, dominating the ranked detection list with high-scoring but poorly-localized predictions. This same bug persisted through exp2b, 2c, 2d, and 2e. Fixed in [[findings/exp2f-flat-head|Exp2f]] by replacing the 6 separate heads with a single flat 184-dim sigmoid vector + focal loss on ALL queries.
+
+---
+
 ## Related
 
 - [[findings/exp1b-fcos-detection|Exp1b FCOS Detection]] — predecessor; 3.2% baseline f-mAP motivates this redesign
 - [[findings/exp1-vs-retinanet-baseline|Exp1 vs RetinaNet Baseline]] — oracle-box starting point
+- [[findings/exp2f-flat-head|Exp2f Flat Head]] — fixes the missing negative supervision bug present in this experiment
 - [[concepts/neuro-symbolic-constraints|Neuro-Symbolic Constraints (T-Norm)]] — t-norm loss theory
 - [[papers/marconato-2022-road-r|Marconato 2022 — ROAD-R]] — Gödel t-norm (Table 7)
 - [[methods/3d-retinanet|3D-RetinaNet]] — baseline being compared against

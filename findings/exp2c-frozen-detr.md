@@ -3,7 +3,7 @@ type: finding
 title: "Exp2c — Frozen-DETR: EfficientNet-FPN + DETR Encoder + CLIP ViT-L/14"
 aliases: ["exp2c", "exp2c frozen detr", "frozen detr road-waymo"]
 created: 2026-05-07
-updated: 2026-05-11
+updated: 2026-05-20
 sources:
   - "ROAD_Reason/experiments/exp2c_frozen_detr/model.py"
   - "ROAD_Reason/experiments/exp2c_frozen_detr/deformable_decoder.py"
@@ -22,7 +22,7 @@ status: draft
 
 Experiment 2c faithfully implements the **Frozen-DETR** architecture (Fu et al., NeurIPS 2024) to fix Exp2b's two major gaps: (1) no encoder (FPN went straight to decoder), and (2) scalar gate fusion destroyed localization. Replaces Qwen2.5-VL ViT with **CLIP ViT-L/14@336px** (approved by Dr. Moradi, 2026-05-07).
 
-**Status:** Training in progress — epoch 15/30 (2026-05-11). Localization steadily improving. f-mAP evaluation pending at epoch 15.
+**Status:** Training in progress — epoch 24/30 (2026-05-12). Localization steadily improving. **f-mAP evaluated at epoch 15** — best checkpoint eval running. Val action mAP peaked at **43.72%** (ep23).
 
 **Motivation:** Exp2b's scalar-gate fusion (`fused = fpn + gate * vlm`) was the simplest possible fusion and produced 1.71% agent f-mAP (10x below RetinaNet). The [[comparisons/fusion-for-detection-lit-review|fusion lit review]] identified Frozen-DETR's encoder self-attention as a fundamentally richer fusion mechanism: CNN and VLM tokens attend to each other through 6 encoder layers of bidirectional attention, rather than a single scalar gate. Exp2c implements this faithfully.
 
@@ -220,7 +220,38 @@ The [[comparisons/fusion-for-detection-lit-review|CNN-VLM Fusion Lit Review]] id
 
 ---
 
-## Training Results (through epoch 14, epoch 15 in progress)
+## f-mAP Results — Epoch 15 Checkpoint
+
+Evaluated via `eval_baseline_compat.py --ckpt checkpoints/epoch_15.pt --mode frame` on ROAD-Waymo val split, IoU=0.5.
+
+| Head | f-mAP (%) | Recall (%) |
+|------|-----------|------------|
+| Agent-ness | 10.61 | 48.2 |
+| Agent | **1.76** | 59.0 |
+| Action | 1.58 | 61.2 |
+| Location | 2.30 | 47.4 |
+| Duplex | 0.64 | 59.9 |
+| Triplet | 1.44 | 60.3 |
+
+**Key insight:** The model has **high recall** (47-61%) — it finds agents reliably — but **low precision at IoU=0.5**. The boxes aren't tight enough yet. This is consistent with the still-improving GIoU loss trajectory.
+
+### Comparison to baselines and prior experiments
+
+| Method | Agent f-mAP | Backbone | Backbone Size |
+|--------|-------------|----------|---------------|
+| 3D-RetinaNet (I3D-08) | 16.7% | ResNet-50 I3D | ~46M |
+| 3D-RetinaNet (SlowFast-08) | 15.3% | SlowFast | ~34M |
+| YOLOv8x (agent-only) | 31.6% | YOLOv8x | ~68M |
+| ECCV 2024 winner (v-mAP@0.5) | 18.41% | YOLOv8x/m | ~68M |
+| Exp1b FCOS (ep15) | 3.2% | Qwen ViT (LoRA) | ~675M |
+| **Exp2c Frozen-DETR (ep15)** | **1.76%** | EfficientNet-B0 | **~5.3M** |
+| Exp2b Deformable DETR (ep27) | 1.71% | EfficientNet-B0 | ~5.3M |
+
+Exp2c matches Exp2b's f-mAP at epoch 15 (vs Exp2b's epoch 27) while saving ~5 GB GPU. Training continues to epoch 30 with GIoU still improving — final f-mAP should be higher.
+
+---
+
+## Training Results (through epoch 18)
 
 Training started 2026-05-08. Warm-started from Exp2b: 595 keys transferred (backbone, FPN, decoder, heads), Qwen/LoRA keys skipped. ~324M total params, ~20M trainable, 304M frozen (CLIP). Each epoch takes ~4h 35min (~16,540s).
 
@@ -240,19 +271,27 @@ Training started 2026-05-08. Warm-started from Exp2b: 595 keys transferred (back
 | 12 | 2.933 | 3.641 | **42.53%** | 0.620 | Best matched mAP |
 | 13 | 2.894 | 3.646 | 42.11% | 0.610 | |
 | 14 | 2.861 | 3.624 | 41.38% | 0.604 | |
-| 15 | ~2.82 | — | — | **~0.596** | In progress |
+| 15 | 2.830 | 3.620 | 42.17% | 0.596 | f-mAP eval done |
+| 16 | 2.790 | 3.640 | 42.25% | 0.586 | |
+| 17 | 2.757 | 3.623 | 42.88% | 0.580 | |
+| 18 | 2.716 | 3.626 | 43.56% | 0.573 | |
+| 19 | 2.681 | 3.648 | 43.12% | 0.564 | |
+| 20 | 2.648 | 3.630 | 43.45% | 0.557 | |
+| 21 | 2.619 | 3.599 | 43.42% | 0.550 | |
+| 22 | 2.593 | 3.581 | 43.68% | 0.545 | |
+| 23 | 2.563 | 3.619 | **43.72%** | **0.538** | New best mAP; ep24 in progress |
 
 **Key observations:**
 
-1. **Localization is steadily improving.** GIoU loss drops every epoch: 0.793 → 0.596 (ep15 mid-epoch). No plateau in sight. This is the primary metric we're watching — it directly measures box quality.
+1. **Localization still improving at epoch 23.** GIoU loss: 0.793 → 0.538. No plateau across 23 epochs. Steady ~0.01 improvement per epoch.
 
-2. **Val matched action mAP peaked at 42.53% (ep12)** and fluctuates +-1%. This metric measures classification on Hungarian-matched predictions, not localization — it's noisy by nature. The overall trend is healthy (40.1% → 42.5%).
+2. **Val matched action mAP peaked at 43.72% (ep23).** Classification quality continues to improve alongside localization. The train-val gap is widening (2.56 vs 3.62) but val mAP keeps climbing — the model is still learning useful features.
 
-3. **Train loss drops consistently** with no divergence (3.81 → 2.82). Train-val gap is widening slightly, expected with cosine LR schedule — the second half of training (ep20-30) is where LR drops and val typically catches up.
+3. **Train loss drops consistently** (3.81 → 2.56). Cosine LR decay in the final 7 epochs should tighten boxes further.
 
-4. **No crashes or OOMs** across 14+ epochs (~65 hours). Architecture is stable.
+4. **No crashes or OOMs** across 23 epochs (~105 hours). Architecture is stable.
 
-5. **Actual f-mAP at IoU=0.5 is unknown until we run `eval_baseline_compat.py`** on the epoch 15 checkpoint. The matched action mAP is not comparable to the 3D-RetinaNet baseline's 17.76% agent f-mAP.
+5. **Best checkpoint eval running** — `eval_baseline_compat.py` on `best.pt` (ep23) to get updated f-mAP numbers beyond the ep15 evaluation.
 
 ---
 
@@ -289,9 +328,28 @@ Based on Frozen-DETR's results on COCO (DINO R50: 49.0 -> 51.9 AP, +2.9 AP):
 
 ---
 
+## Post-Mortem: Resolution Was the Bottleneck (2026-05-17)
+
+Diagnostic analysis comparing exp2c and exp2d revealed that **input resolution — not backbone strength — was the root cause of low f-mAP**. At 448×448 (exp2c) and 384×384 (exp2d):
+
+- A 16px pedestrian in the original 1920×1280 frame becomes **3.2–3.7px** in model input
+- FPN stride-8 features: 3.2px = 0.4 cells — below the minimum needed for IoU≥0.5
+- Large objects (cars/trucks) achieved IoU 0.95+ but small objects were 0.2-0.4
+
+The Frozen-DETR paper runs R50 at **800×1333** (7× more pixels). At that resolution, the same pedestrian is ~6.7px — detectable. The backbone was never the problem; resolution was. See [[findings/exp2e-r50-frozen-detr|Exp2e]] for the resolution fix experiment.
+
+---
+
+## Post-Mortem: Missing Negative Supervision (identified May 2026)
+
+The 1.76% agent f-mAP was primarily caused by **missing negative supervision on unmatched queries** (same bug as exp2/2b). The resolution bottleneck (448×448 vs paper's 800×1333) was real but secondary — exp2e proved resolution alone only gets to 5.5% agentness f-mAP. The dominant failure was scoring: unmatched queries had unchecked class scores. Fixed in [[findings/exp2f-flat-head|Exp2f]].
+
+---
+
 ## Related
 
 - [[findings/exp2b-deformable-detr|Exp2b Deformable DETR]] — predecessor; scalar gate fusion bottleneck motivates this redesign
+- [[findings/exp2f-flat-head|Exp2f Flat Head]] — fixes the missing negative supervision bug present in this experiment
 - [[papers/fu-2024-frozen-detr|Fu 2024 — Frozen-DETR]] — reference paper implemented here
 - [[comparisons/fusion-for-detection-lit-review|CNN-VLM Fusion Lit Review]] — Path B (encoder fusion) is what Exp2c implements
 - [[concepts/vlm-localization-gap|VLM Localization Gap]] — core problem being addressed

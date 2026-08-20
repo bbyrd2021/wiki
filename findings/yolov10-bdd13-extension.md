@@ -3,7 +3,7 @@ type: finding
 title: "YOLOv10-13 — Extending BDD100K Detector with Deer, Cone, Barrier"
 aliases: ["yolov10-bdd13", "yolov10-13", "13-class detector"]
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-05-29
 sources:
   - "YOLO_BDD/auto_label_deer.py"
   - "YOLO_BDD/download_roboflow.py"
@@ -242,6 +242,39 @@ CUDA_VISIBLE_DEVICES=0 PYTHONUNBUFFERED=1 \
     python -u train_yolov10_13class.py \
     > runs/logs/full.log 2>&1 &
 ```
+
+---
+
+## Deployment re-verification (2026-05-29)
+
+Re-ran `model.val()` against `/data/datasets/bdd13-extended/bdd13.yaml` using the **deployed checkpoint** copied into the ROS package — `/data/repos/AutoDrivePerception2026/yolov10_ros/models/yolov10s-bdd13.pt` (16.5 MB, 7.22 M fused params, 21.4 GFLOPs). Confirms the shipped weights match the training-time `best.pt` (epoch 42) within rounding.
+
+| Metric | Training-time best (epoch 42) | Deployed re-eval (2026-05-29) | Δ |
+|---|---:|---:|---:|
+| mAP50 | 0.602 | **0.6009** | −0.001 |
+| mAP50-95 | 0.368 | **0.3678** | ≈0 |
+| mean P | — | 0.7513 | — |
+| mean R | — | 0.5453 | — |
+
+Per-class (deployed, full table including BDD classes the original eval didn't tabulate separately):
+
+| idx | Class | P | R | F1 | mAP50 | mAP50-95 |
+|----:|-------|------:|------:|------:|--------:|-------------:|
+| 0 | pedestrian | 0.757 | 0.515 | 0.613 | 0.617 | 0.312 |
+| 1 | rider | 0.717 | 0.399 | 0.513 | 0.460 | 0.234 |
+| 2 | car | 0.793 | 0.720 | 0.755 | **0.793** | **0.497** |
+| 3 | truck | 0.678 | 0.572 | 0.621 | 0.636 | 0.465 |
+| 4 | bus | 0.699 | 0.541 | 0.610 | 0.616 | 0.477 |
+| 5 | train | 1.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+| 6 | motorcycle | 0.659 | 0.363 | 0.468 | 0.428 | 0.218 |
+| 7 | bicycle | 0.593 | 0.446 | 0.509 | 0.466 | 0.231 |
+| 8 | traffic light | 0.700 | 0.531 | 0.604 | 0.596 | 0.236 |
+| 9 | traffic sign | 0.723 | 0.579 | 0.643 | 0.653 | 0.352 |
+| 10 | **deer** | 0.818 | 0.799 | 0.808 | **0.873** | **0.705** |
+| 11 | cone | 0.769 | 0.643 | 0.700 | 0.701 | 0.380 |
+| 12 | barrier | 0.860 | 0.981 | 0.916 | **0.974** | 0.675 |
+
+Eval artifacts: `/tmp/eval_bdd13.py`, `/tmp/bdd13_eval.json`. Mirrored to `AutoDrivePerception2026/yolov10_ros/docs/detector_eval.md` for in-repo discoverability.
 
 ---
 

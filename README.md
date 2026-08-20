@@ -111,7 +111,7 @@ See [CLAUDE.md → Paper buds](CLAUDE.md) for the full schema, identity-match pr
 
 ## Operations
 
-Four agent skills sit on top of the CLI. Each is a thin instruction layer; the deterministic work happens in `wiki.py`.
+Five agent skills sit on top of the CLI. Each is a thin instruction layer; the deterministic work happens in `wiki.py` where state is involved.
 
 | Slash command | Skill file | What it does |
 |---|---|---|
@@ -119,6 +119,7 @@ Four agent skills sit on top of the CLI. Each is a thin instruction layer; the d
 | `/wiki-query` | [`.claude/skills/wiki-query/SKILL.md`](.claude/skills/wiki-query/SKILL.md) | Search the wiki, read top hits, synthesize an answer where every claim carries a `[[wikilink]]` citation. |
 | `/wiki-lint` | [`.claude/skills/wiki-lint/SKILL.md`](.claude/skills/wiki-lint/SKILL.md) | Run the health check; triage + fix orphans, broken wikilinks, missing frontmatter; surface soft signals like `stale` / `bud-stale` / `bud-no-citing`. |
 | `/wiki-bud-from-paper` | [`.claude/skills/wiki-bud-from-paper/SKILL.md`](.claude/skills/wiki-bud-from-paper/SKILL.md) | Walk an already-ingested paper's References / Related Works / result tables and mint ≤15 bud pages for cited papers in the lab's research themes. |
+| `/wiki-diagram` | [`.claude/skills/wiki-diagram/SKILL.md`](.claude/skills/wiki-diagram/SKILL.md) | Add a Mermaid block (default; renders in Obsidian + GitHub) or an Excalidraw stub (Obsidian-only sketch) to a page. Picks the diagram type from intent; pure content, no CLI backing. |
 
 ### CLI (`wiki.py`)
 

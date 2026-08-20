@@ -3,7 +3,7 @@ type: finding
 title: "Exp2b — Deformable DETR with EfficientNet + Iterative Refinement"
 aliases: ["exp2b", "exp2b deformable detr", "deformable detr road-waymo"]
 created: 2026-04-27
-updated: 2026-05-04
+updated: 2026-05-20
 sources:
   - "ROAD_Reason/experiments/exp2b_efficientnet_detr/model.py"
   - "ROAD_Reason/experiments/exp2b_efficientnet_detr/deformable_decoder.py"
@@ -241,10 +241,17 @@ T-norm (Gödel) constraint violation rates — percentage of co-predictions that
 
 ---
 
+## Post-Mortem: Missing Negative Supervision (identified May 2026)
+
+The 1.71% agent f-mAP was primarily caused by **missing negative supervision on unmatched queries** (same bug as exp2). The `_classification_loss` only applied to matched queries; unmatched queries received zero gradient on all 5 classification heads. The "VLM localization bottleneck" conclusion was partially wrong — localization was not great, but the dominant failure was scoring. Fixed in [[findings/exp2f-flat-head|Exp2f]].
+
+---
+
 ## Related
 
 - [[findings/exp2-detr-detection|Exp2 DETR Detection]] — predecessor; 0.63% agent f-mAP motivates this redesign
 - [[findings/exp1b-fcos-detection|Exp1b FCOS Detection]] — FCOS predecessor; 3.2% agent f-mAP
+- [[findings/exp2f-flat-head|Exp2f Flat Head]] — fixes the missing negative supervision bug present in this experiment
 - [[concepts/vlm-localization-gap|VLM Localization Gap]] — why ViT-only features fail at detection
 - [[methods/3d-retinanet|3D-RetinaNet]] — baseline (17.76% agent f-mAP)
 - [[projects/road-reason|ROAD_Reason Project]] — parent project
