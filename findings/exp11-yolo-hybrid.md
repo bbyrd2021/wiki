@@ -75,6 +75,25 @@ t-norm effects were real only because its heads shared a trainable ViT that
 coupled the columns. **Constraints act through shared representations, not
 through independent output heads.**
 
+## Addendum 2026-08-25 — final cells
+
+**Real junk negatives change nothing; the gate is essential.** Retraining with
+293K of YOLO's own unmatched train-split boxes as negatives left every gated
+number within noise of the headline (action 15.92 / loc 19.60 / duplex 11.13 /
+triplet 6.65), and the **ungated** eval still collapses (action 5.77). A 1×1
+frozen-feature linear head cannot rank detector junk regardless of negative
+realism — objectness conditioning (head sigmoid × detector conf) is a
+structural requirement of this architecture, not a patch.
+
+**YOLO26x scores 23.30 agent f-mAP (best = epoch 2) — read with a protocol
+caveat.** Near-identical Ultralytics mAP50 to v8x (0.380 vs 0.382), but its
+NMS-free one-to-one head emits ~10× fewer low-confidence candidates (Bus:
+3.9K vs 42K dets), starving the deep AP tail the baseline evaluator rewards.
+The fair full-candidate comparison requires a one-to-many-branch dump
+(pending); until then v8x remains the box source of record. 26x's curve peaked
+at epoch 2 — the over-training pattern replicates across architectures
+([[findings/road-waymo-schedule-overtraining]]).
+
 ## Why triplet still belongs to the baseline
 
 The baseline's compositional sigmoids were trained end-to-end with the I3D

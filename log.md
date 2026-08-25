@@ -634,3 +634,7 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Pages updated: 5 (`index.md`, `findings/exp9-attribution-grid.md`, `papers/eccv24-track1.md`, `directions/vlm-reasoning-layer.md`, `log.md`)
 - Source: ROAD_Reason/experiments/exp11_yolo/ (results JSONs, conversion, training logs)
 - Summary: First full-candidate-protocol results. YOLOv8x box source surpasses the ECCV reference (35.24 vs 31.6) with best=epoch-1 (over-training finding: effective n = scenes); RoIAlign hybrid beats the same-rows I3D baseline on 4/6 label types; λ sweep exposes that loss-side constraints cannot reach composed output columns through a linear head — the structural complement to exp9's coupled-backbone t-norm effects. Re-baselines the table for the InternVideo2/contrastive rungs.
+
+## [2026-08-25] UPDATE — Exp11 final cells: junk negatives, gate essentiality, YOLO26x
+- Pages updated: 2 (`findings/exp11-yolo-hybrid.md`, `log.md`)
+- Summary: Junk-negative retrain leaves gated numbers unchanged and ungated still collapsed — conf gating is structural for frozen-feature linear heads. YOLO26x best=ep2 scores 23.30 agent under the full-candidate protocol vs v8x 35.24, largely a candidate-depth artifact of its NMS-free one-to-one head (10× fewer low-conf candidates); one-to-many re-dump pending. Over-training pattern replicated on 26x (peak ep2).
