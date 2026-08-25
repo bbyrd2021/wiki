@@ -183,7 +183,7 @@ Architectural choices Moradi left open or flagged for in-person discussion (per 
 
 Per-stage logs and metrics commit to `findings/exp5-vlm-reasoning-stage<N>.md` after each gate clears.
 
-## Status Ledger (as of 2026-08-12)
+## Status Ledger (as of 2026-08-24)
 
 | Date | Event |
 |------|-------|
@@ -196,7 +196,8 @@ Per-stage logs and metrics commit to `findings/exp5-vlm-reasoning-stage<N>.md` a
 | 2026-08-12→13 | Val re-cache finished clean; reparse (19,099 files, +7,198 boxes); full queued chain executed same night |
 | 2026-08-13 | **Stage-2 gate result:** joint fused best agent 14.69 vs detector-only control 14.62 — a tie; relational heads at/below control; zero-language ablation (14.76) beats every language-carrying fusion. **Gate not met.** See [[findings/exp8-joint-lora-fusion\|Exp8 Joint-LoRA Fusion]] |
 | 2026-08-17→19 | **Exp9 attribution grid complete** (heads not text, strict alternation, corrected t-norm, Moradi head-warmup): structured heads ≈ detector on agent (14.51 vs 14.62); corrected t-norm binds (violations →0, duplex +0.5); **language co-training degrades every head** (R3 agent 11.80). Gate not met → direction changes per Moradi 2026-08-18 branch. See [[findings/exp9-attribution-grid\|Exp9 Attribution Grid]] |
-| next | Contrastive phrase head (Moradi 2026-08-18 suggestion): frozen [[papers/wang-2024-internvideo2\|InternVideo2]]-clip features + phrase-space projection — the one untested language mechanism |
+| 2026-08-20→24 | **New era: Moradi YOLO directive** (YOLOv8+I3D hybrid, then frozen InternVideo2, then the contrastive head; full-candidate protocol, no top-40 anywhere). Exp11: YOLOv8x box source at **35.24 agent** (beats the 31.6 reference; [[findings/road-waymo-schedule-overtraining\|best = epoch 1]]); RoIAlign hybrid beats the same-rows I3D baseline on 4/6 heads (action 15.86, loc 19.68); triplet still baseline's (end-to-end coupling). See [[findings/exp11-yolo-hybrid\|Exp11]] |
+| next | Junk-negative head retrain (YOLO train-split dump); YOLO26x completes; then InternVideo2 features on the same rows and the contrastive phrase head on the same pooling machinery |
 
 ## Related
 

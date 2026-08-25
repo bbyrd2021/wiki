@@ -57,6 +57,12 @@ A **YOLOv8-based multi-branch engineering solution** — no novel architecture, 
 | SlowFast-08 | 15.3 | 14.0 | 12.4 | 10.2 | 5.7 |
 | YOLOv8 (agent-only) | **31.6** | — | — | — | — |
 
+**Update 2026-08-24:** our exp11 YOLOv8x run surpassed this reference (35.24
+agent f-mAP, full-candidate val — [[findings/exp11-yolo-hybrid]]); notably the
+best checkpoint was epoch 1, and the paper's own 30+20 recipe *degraded* the
+model to 29.92 by epoch 50 on a video-disjoint val
+([[findings/road-waymo-schedule-overtraining]]).
+
 YOLOv8 achieves 31.6% agent f-mAP but only for agent detection — no action/location/triplet heads.
 
 ---

@@ -71,6 +71,13 @@ supervision underperforms heads (point 1), and now training-time co-training
 subtracts. Per Moradi's 2026-08-18 branch ("if not, we will change
 direction"): the gate is not met and the direction changes.
 
+**Corollary from exp11 (2026-08-24):** the t-norm effects in this grid depended
+on the shared trainable ViT coupling the output heads. On a frozen-feature
+*linear* head, the same penalty cannot reach the duplex/triplet columns at all
+(element-wise losses train linear columns independently) — see
+[[findings/exp11-yolo-hybrid]] finding 3. Constraints act through shared
+representations, not independent output heads.
+
 ## What it argues for
 
 The one language mechanism *not* yet tested is Moradi's contrastive
