@@ -638,3 +638,7 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 ## [2026-08-25] UPDATE — Exp11 final cells: junk negatives, gate essentiality, YOLO26x
 - Pages updated: 2 (`findings/exp11-yolo-hybrid.md`, `log.md`)
 - Summary: Junk-negative retrain leaves gated numbers unchanged and ungated still collapsed — conf gating is structural for frozen-feature linear heads. YOLO26x best=ep2 scores 23.30 agent under the full-candidate protocol vs v8x 35.24, largely a candidate-depth artifact of its NMS-free one-to-one head (10× fewer low-conf candidates); one-to-many re-dump pending. Over-training pattern replicated on 26x (peak ep2).
+
+## [2026-08-25] UPDATE — Derived-composition cells close negative
+- Pages updated: 2 (`findings/exp11-yolo-hybrid.md`, `log.md`)
+- Summary: Zero-training cells replacing learned duplex/triplet columns with min/product composition of the head's primitives both lose to the learned columns (min 10.36/5.52, product 9.88/5.41 vs 11.13/6.65). Learned compositional parameters carry co-occurrence knowledge; empirical motivation for per-composition phrase embeddings in the proposed contrastive head.
