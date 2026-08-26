@@ -45,10 +45,17 @@ sweep), and is superseded by hard vocabulary constraints (stacked MLP: zero
 composed violations by construction). See
 [[concepts/neuro-symbolic-constraints]].
 
-## Timeline
+## Timeline (compressed — defense by October, per Brandon 2026-08-26)
 
-Sept: proposal defense, phrases.json review, InternVideo2 dumps on YOLO rows.
-Sept–Oct: phrase-head cells + ablations; optional test-set v-mAP submission.
-Nov: writing (wiki findings pages are chapter drafts); defense. Fallback
-claims if the phrase head fails its gate: the platform sweep, the constraint
-arc, the over-training finding, the corrected constraint sets.
+- Now → early Sept: Moradi meeting + **proposal defense**; writing starts
+  immediately in parallel (wiki findings/method/concept pages are chapter
+  drafts — attribution + platform chapters assemblable this week).
+- Sept: InternVideo2 dumps + the two phrase-head cells, hard **mid-Sept
+  go/no-go** on the phrase head.
+- Early–mid Oct: draft complete to committee (~2 weeks before defense).
+- **Late Oct: thesis defense.**
+- Cut list (only if idle GPU + writing on schedule): coherence-penalty
+  ablation, YOLO26 one-to-many re-dump, test-set v-mAP submission.
+- The thesis stands without the phrase head: the six-head sweep, the
+  attribution studies, the constraint arc, and the over-training finding are
+  the committed claims; the phrase head is upside, not load-bearing.
