@@ -94,6 +94,17 @@ The fair full-candidate comparison requires a one-to-many-branch dump
 at epoch 2 — the over-training pattern replicates across architectures
 ([[findings/road-waymo-schedule-overtraining]]).
 
+**Derived composition loses — both t-norms (zero-training cells, 2026-08-25).**
+Replacing the learned duplex/triplet columns with compositions of the head's
+own gated primitives over the valid tuples scores *worse* than the learned
+columns: Gödel min 10.36/5.52, product 9.88/5.41, vs learned 11.13/6.65 (and
+baseline 11.32/7.54). Monotonic ladder: end-to-end learned > frozen-feature
+learned > min > product. Compositional classes encode co-occurrence knowledge
+(Car-Stop = 38% of duplexes) that score-level composition discards, and
+composition propagates the weakest primitive (action). Design consequence:
+compositions deserve their own parameters/embeddings — the empirical case for
+per-composition phrase embeddings over compose-from-primitives.
+
 ## Why triplet still belongs to the baseline
 
 The baseline's compositional sigmoids were trained end-to-end with the I3D
