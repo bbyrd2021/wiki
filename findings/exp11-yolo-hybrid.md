@@ -105,7 +105,34 @@ composition propagates the weakest primitive (action). Design consequence:
 compositions deserve their own parameters/embeddings — the empirical case for
 per-composition phrase embeddings over compose-from-primitives.
 
-## Why triplet still belongs to the baseline
+## The stacked composition MLP — full sweep (2026-08-26)
+
+Brandon's design: a 2-layer MLP that composes the head's own primitive
+sigmoids into the 135 compositional scores (learned composition, replacing the
+free columns). Trained under a video-level 2-fold out-of-fold stacking
+protocol (fold heads generate training inputs; adversarial review demanded
+this — in-sample stacking would have been confounded). Two variants:
+
+| composition source | duplex | triplet |
+|---|---|---|
+| **stacked MLP, sigmoids + 256-d feature (305-d in)** | **15.52** | **9.73** |
+| stacked MLP, sigmoids only (49-d in) | 13.37 | 8.93 |
+| baseline (end-to-end learned) | 11.32 | 7.54 |
+| learned free columns | 11.13 | 6.65 |
+| fixed product (corrected single-gate; orig row had a conf²/conf³ bug) | 10.58 | 6.05 |
+| fixed Gödel min | 10.36 | 5.52 |
+
+**The hybrid beats the same-rows baseline on all six label types** — the full
+sweep: agentness +30.0, agent +18.6, action +2.7, loc +6.8, duplex +4.2,
+triplet +2.2. Best known val numbers on this benchmark on every head.
+Monotonic ladder: fixed composition < free columns < learned composition <
+learned composition + features. Compositions want their own *parameters* fed
+by both primitives and evidence — the co-occurrence knowledge fixed t-norms
+discard is learnable, and visual features carry compositional signal beyond
+the primitives. Direct design guidance for the phrase head: per-composition
+embeddings, conditioned on features, not composed from primitive scores.
+
+## Why triplet still belongs to the baseline (superseded 2026-08-26 — see above)
 
 The baseline's compositional sigmoids were trained end-to-end with the I3D
 backbone — the same coupling that finding 3 says constraints (and gradients

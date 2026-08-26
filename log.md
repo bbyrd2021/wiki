@@ -642,3 +642,7 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 ## [2026-08-25] UPDATE — Derived-composition cells close negative
 - Pages updated: 2 (`findings/exp11-yolo-hybrid.md`, `log.md`)
 - Summary: Zero-training cells replacing learned duplex/triplet columns with min/product composition of the head's primitives both lose to the learned columns (min 10.36/5.52, product 9.88/5.41 vs 11.13/6.65). Learned compositional parameters carry co-occurrence knowledge; empirical motivation for per-composition phrase embeddings in the proposed contrastive head.
+
+## [2026-08-26] UPDATE — Stacked composition MLP: hybrid sweeps all six heads
+- Pages updated: 2 (`findings/exp11-yolo-hybrid.md`, `log.md`)
+- Summary: Brandon's stacked-MLP design (OOF primitive sigmoids + pooled features → learned composition) scores duplex 15.52 / triplet 9.73, beating the end-to-end baseline on the last two heads — the hybrid now leads on all six label types. Corrected product row (10.58/6.05) completes the monotonic composition ladder. Multi-agent build: coded and adversarially reviewed (double-gating bug in the earlier product row found and fixed; OOF protocol enforced).
