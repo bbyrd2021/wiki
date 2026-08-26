@@ -646,3 +646,9 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 ## [2026-08-26] UPDATE — Stacked composition MLP: hybrid sweeps all six heads
 - Pages updated: 2 (`findings/exp11-yolo-hybrid.md`, `log.md`)
 - Summary: Brandon's stacked-MLP design (OOF primitive sigmoids + pooled features → learned composition) scores duplex 15.52 / triplet 9.73, beating the end-to-end baseline on the last two heads — the hybrid now leads on all six label types. Corrected product row (10.58/6.05) completes the monotonic composition ladder. Multi-agent build: coded and adversarially reviewed (double-gating bug in the earlier product row found and fixed; OOF protocol enforced).
+
+## [2026-08-26] INGEST — Stacked-MLP method page, proposal direction page, constraint-arc consolidation
+- Pages created: 2 (`methods/stacked-composition-mlp.md`, `directions/thesis-proposal-fall-2026.md`)
+- Pages updated: 5 (`concepts/neuro-symbolic-constraints.md`, `findings/exp11-yolo-hybrid.md`, `directions/vlm-reasoning-layer.md`, `index.md`, `log.md`)
+- Source: ROAD_Reason/experiments/exp11_yolo/train_comp_mlp.py + proposal skeleton
+- Summary: Names and documents the component that completed the six-head sweep (architecture, OOF protocol, ladder, lineage honesty); records the proposal of record as a direction page; consolidates the constraint arc into the concept page as three measured conditions (soft-coupled binds / soft-independent inert / hard-vocabulary supersedes) — the thesis's secondary contribution now has a single citable home.

@@ -131,6 +131,11 @@ by both primitives and evidence — the co-occurrence knowledge fixed t-norms
 discard is learnable, and visual features carry compositional signal beyond
 the primitives. Direct design guidance for the phrase head: per-composition
 embeddings, conditioned on features, not composed from primitive scores.
+Bonus property: the MLP's output vocabulary IS the valid set, so invalid
+compositions are structurally unpredictable — zero composed-label violations
+by construction, closing the constraint arc
+([[concepts/neuro-symbolic-constraints]], condition 3). Architecture details:
+[[methods/stacked-composition-mlp]].
 
 ## Why triplet still belongs to the baseline (superseded 2026-08-26 — see above)
 

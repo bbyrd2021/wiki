@@ -1,7 +1,7 @@
 ---
 type: index
-updated: 2026-08-24
-total_pages: 129
+updated: 2026-08-26
+total_pages: 131
 ---
 
 # Research Wiki — Index
@@ -181,6 +181,8 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[findings/exp9-attribution-grid|Exp9 Attribution Grid]] — heads beat text 2× (agent 7.07→14.51), first corrected t-norm run binds (violations →0, duplex +0.5, agent −2), and language co-training HURTS every head (R3 agent 11.8 vs R1 14.5) — three-way negative on language complete; points to the contrastive phrase head
 - [[findings/exp11-yolo-hybrid|Exp11 — YOLO + I3D Hybrids]] — full-candidate era: YOLOv8x 35.24 agent; RoIAlign hybrid beats same-rows baseline on 4/6 heads; constraints can't reach composed outputs through linear heads
 - [[findings/road-waymo-schedule-overtraining|ROAD-Waymo Schedule Over-Training]] — effective n = 600 scenes, not 115K frames; epoch-1 beats epoch-50 by 5.3 agent f-mAP
+- [[methods/stacked-composition-mlp|Stacked Composition MLP]] — Brandon's learned-composition head; completed the exp11 six-head sweep (duplex 15.52 / triplet 9.73); zero composed violations by construction
+- [[directions/thesis-proposal-fall-2026|Thesis Proposal (Fall 2026)]] — the proposal of record: attribution studies → hybrid platform → contrastive phrase head; gates and timeline
 - [[findings/sparse-temporal-pie-results|SparseTemporalPIE Full Results]] — complete narrative: SOTA tables (PIE + JAAD), v3 vs v4 ablation, backbone init ablation, IL step progression, v=0 stationary eval, discussion and limitations
 - [[findings/traffic-light-domain-shift|Traffic Light Domain-Shift Retrain]] — LISA→rig red/yellow confusion + dark-housing failure; retrained on LISA+BSTLD with new `off` class to retire the HSV gate (draft, 2026-05-07)
 - [[findings/yolov10-bdd13-extension|YOLOv10-13 Extension]] — extended YOLO_BDD's 10-class detector to 13 (deer, cone, barrier) for AutoDrive; mAP50 0.602 across 13 cls, no regression on BDD-10 (0.524→0.527), Grounding DINO auto-labeled deer (2026-05-08)
