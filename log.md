@@ -664,3 +664,7 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Buds: +2 (`kung-2024-action-slot`, `feichtenhofer-2020-x3d`), +1 citer on `wang-2022-internvideo`
 - Source: wiki/raw/ECCV2024_ROAD_Track3_TACO_FirstPlace.pdf (arXiv:2410.23092)
 - Summary: The April page was conflated from a secondary source — Track 3 is atomic activity recognition on TACO (simulated), not ROAD-Waymo; authors Inspur, base model Action-slot, backbones X3D+InternVideo, win by 4-axis ensembling. Lab-relevant: InternVideo in a winning road system (supports exp12), the small-object/upsampling lesson again, and an epochs-60-100 overfitting regime to cite as CONTRAST with our best=ep1-2 finding.
+
+## [2026-08-27] UPDATE — Exp12 true-clip cells: motion null for flat, modest through phrases
+- Pages updated: 2 (`findings/exp12-phrase-head-attribution.md`, `log.md`)
+- Summary: C5/C6 land. Real clips give the flat head nothing (+0.01 action) and the phrase head +0.3-0.4 across heads (interaction effect). The I3D gap persists; resolution becomes the prime suspect, converging with the Track-3 winners' upsampling fix. Crop-RoI promoted to the front of the September queue.

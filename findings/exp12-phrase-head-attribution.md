@@ -54,6 +54,19 @@ cell. Gate: the [[methods/stacked-composition-mlp|stacked-MLP]] record
    phrase head. Near-synonym phrases hurt; distinct phrases help — concrete
    input to the phrase review with Moradi.
 
+## Addendum 2026-08-27 — true clips: motion is not the missing ingredient
+
+C5/C6 (real 8-frame windows, keyframe-slice pooling, same rows): the flat
+head gains **nothing** from motion (action 12.73 → 12.74); the phrase head
+gains modestly and consistently (action 13.11 → 13.49, duplex 9.15 → 9.53,
+triplet 4.86 → 5.19) — the mechanism's edge over flat *grows* with clips
+(+0.75 action vs +0.38 static), an interaction effect: semantic anchors give
+temporal signal somewhere to land. The ~2.4-point action gap to I3D persists
+→ **resolution is now the prime suspect** (converging: the exp2 lesson, the
+token-size arithmetic, and the [[papers/eccv24-track3|Track-3 winners']] 2×
+upsampling fix). September priority reordered: crop-RoI (Moradi's #3, full
+encoder resolution per box) first, the 1B encoder second.
+
 ## September implication
 
 One lever, two upgrades, both unmeasured: true 8-frame clips (cheap re-cache)
