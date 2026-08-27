@@ -652,3 +652,9 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Pages updated: 5 (`concepts/neuro-symbolic-constraints.md`, `findings/exp11-yolo-hybrid.md`, `directions/vlm-reasoning-layer.md`, `index.md`, `log.md`)
 - Source: ROAD_Reason/experiments/exp11_yolo/train_comp_mlp.py + proposal skeleton
 - Summary: Names and documents the component that completed the six-head sweep (architecture, OOF protocol, ladder, lineage honesty); records the proposal of record as a direction page; consolidates the constraint arc into the concept page as three measured conditions (soft-coupled binds / soft-independent inert / hard-vocabulary supersedes) — the thesis's secondary contribution now has a single citable home.
+
+## [2026-08-27] INGEST — Exp12 phrase-head default run: five attributed findings
+- Pages created: 1 (`findings/exp12-phrase-head-attribution.md`)
+- Pages updated: 3 (`directions/vlm-reasoning-layer.md`, `index.md`, `log.md`)
+- Source: ROAD_Reason/experiments/exp12_phrase_head/ (results_c1..c4 JSONs)
+- Summary: The proposed contribution's first results. Mechanism validated with tail signature; encoder measured as the bottleneck (static-224² CLIP_S); alignment quality gates the mechanism's size; combination cell ties the stacked-MLP record, closing head-design search. One lever remains (features: true clips, 1B) for the September timebox.
