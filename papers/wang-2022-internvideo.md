@@ -3,7 +3,7 @@ type: paper
 title: "InternVideo: General Video Foundation Models via Generative and Discriminative Learning"
 aliases: []
 created: 2026-08-18
-updated: 2026-08-18
+updated: 2026-08-27
 sources: []
 tags: [paper, bud]
 status: bud
@@ -11,7 +11,7 @@ authors: "Wang et al."
 year: 2022
 venue: "arXiv preprint"
 arxiv: "2212.03191"
-citing: [wang-2024-internvideo2]
+citing: [wang-2024-internvideo2, eccv24-track3]
 ---
 
 # InternVideo: General Video Foundation Models via Generative and Discriminative Learning
@@ -21,3 +21,4 @@ citing: [wang-2024-internvideo2]
 ## Cited by
 
 - [[papers/wang-2024-internvideo2]] — Intro + Related Works — predecessor ViFM whose two-stage masked+contrastive training InternVideo2 extends into a three-stage progressive scheme
+- [[papers/eccv24-track3]] — One of two ensemble backbones in the Track-3 winner

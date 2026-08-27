@@ -658,3 +658,9 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Pages updated: 3 (`directions/vlm-reasoning-layer.md`, `index.md`, `log.md`)
 - Source: ROAD_Reason/experiments/exp12_phrase_head/ (results_c1..c4 JSONs)
 - Summary: The proposed contribution's first results. Mechanism validated with tail signature; encoder measured as the bottleneck (static-224² CLIP_S); alignment quality gates the mechanism's size; combination cell ties the stacked-MLP record, closing head-design search. One lever remains (features: true clips, 1B) for the September timebox.
+
+## [2026-08-27] INGEST — ECCV24 Track-3 first-place PDF (primary source) + page correction
+- Pages updated: 2 (`papers/eccv24-track3.md` rewritten from PDF, `log.md`)
+- Buds: +2 (`kung-2024-action-slot`, `feichtenhofer-2020-x3d`), +1 citer on `wang-2022-internvideo`
+- Source: wiki/raw/ECCV2024_ROAD_Track3_TACO_FirstPlace.pdf (arXiv:2410.23092)
+- Summary: The April page was conflated from a secondary source — Track 3 is atomic activity recognition on TACO (simulated), not ROAD-Waymo; authors Inspur, base model Action-slot, backbones X3D+InternVideo, win by 4-axis ensembling. Lab-relevant: InternVideo in a winning road system (supports exp12), the small-object/upsampling lesson again, and an epochs-60-100 overfitting regime to cite as CONTRAST with our best=ep1-2 finding.
