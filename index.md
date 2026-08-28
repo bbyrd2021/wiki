@@ -183,6 +183,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[findings/road-waymo-schedule-overtraining|ROAD-Waymo Schedule Over-Training]] — effective n = 600 scenes, not 115K frames; epoch-1 beats epoch-50 by 5.3 agent f-mAP
 - [[methods/stacked-composition-mlp|Stacked Composition MLP]] — Brandon's learned-composition head; completed the exp11 six-head sweep (duplex 15.52 / triplet 9.73); zero composed violations by construction
 - [[findings/exp12-phrase-head-attribution|Exp12 — Phrase Head Attribution]] — mechanism works (41/49 rare triplets), encoder is the bottleneck, combination ties the record; features are the lever
+- [[findings/hybrid-evolution-narrative|Hybrid Evolution Narrative]] — the four-stage story from baseline to sweep, inputs/outputs per stage; the Moradi-requested narrative
 - [[directions/thesis-proposal-fall-2026|Thesis Proposal (Fall 2026)]] — the proposal of record: attribution studies → hybrid platform → contrastive phrase head; gates and timeline
 - [[findings/sparse-temporal-pie-results|SparseTemporalPIE Full Results]] — complete narrative: SOTA tables (PIE + JAAD), v3 vs v4 ablation, backbone init ablation, IL step progression, v=0 stationary eval, discussion and limitations
 - [[findings/traffic-light-domain-shift|Traffic Light Domain-Shift Retrain]] — LISA→rig red/yellow confusion + dark-housing failure; retrained on LISA+BSTLD with new `off` class to retire the HSV gate (draft, 2026-05-07)

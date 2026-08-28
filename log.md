@@ -668,3 +668,8 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 ## [2026-08-27] UPDATE — Exp12 true-clip cells: motion null for flat, modest through phrases
 - Pages updated: 2 (`findings/exp12-phrase-head-attribution.md`, `log.md`)
 - Summary: C5/C6 land. Real clips give the flat head nothing (+0.01 action) and the phrase head +0.3-0.4 across heads (interaction effect). The I3D gap persists; resolution becomes the prime suspect, converging with the Track-3 winners' upsampling fix. Crop-RoI promoted to the front of the September queue.
+
+## [2026-08-27] INGEST — Hybrid evolution narrative (Moradi-requested)
+- Pages created: 1 (`findings/hybrid-evolution-narrative.md`)
+- Pages updated: 2 (`index.md`, `log.md`)
+- Summary: The four-stage architectural narrative with per-stage inputs/outputs/rationale — baseline one-network → IoU score transfer → RoIAlign+head → stacked composition MLP — each transition motivated by the previous stage's measured failure. Diagram-ready source for Brandon's figures.
