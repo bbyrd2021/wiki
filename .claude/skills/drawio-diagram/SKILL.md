@@ -78,3 +78,19 @@ Conventions to follow at this detail level (~100-300 cells per figure):
    not the edge.
 6. Side-by-side beats stacked when two consumers share one producer (heads
    under a bus), so no through-shape wiring is ever needed.
+
+## v4 corrections (from the second screenshot round)
+
+7. **Bus entries are PROPORTIONAL, never fixed**: each drop's entryX =
+   (source_center_x - bus_x) / bus_width, entryY=0 — so every drop is a
+   straight vertical at its own lane. A fixed entry point turns the bus into
+   a horizontal snake pile.
+8. **Compute alignment, don't eyeball**: define column center constants
+   (e.g. T3X=703) and derive EVERY x in that column from them (cube x =
+   cx - w/2, block x = cx - 55). A 7px offset reads as a jagged elbow.
+9. **Row exclusivity**: a row that carries a horizontal edge (the up-chain)
+   may contain NOTHING else at that y. Lanes that must coexist go strictly
+   right of the last column that the horizontal reaches.
+10. **Merging two outputs into one consumer = symmetric funnel**: both exit
+    bottom, waypoint at a shared y below both, enter the consumer's top at
+    0.25/0.75. Never route one output horizontally past its sibling.
