@@ -94,3 +94,12 @@ Conventions to follow at this detail level (~100-300 cells per figure):
 10. **Merging two outputs into one consumer = symmetric funnel**: both exit
     bottom, waypoint at a shared y below both, enter the consumer's top at
     0.25/0.75. Never route one output horizontally past its sibling.
+
+11. **Fan-in grouping: CONTAINER, not bus bar** (Brandon 2026-08-29): when N
+    shapes feed one consumer set, put them inside a titled container
+    (container=1;pointerEvents=0; light gray fill) and connect the CONTAINER
+    to the consumers — 2 edges instead of N drops + bar. Title placement:
+    find a band of the container no edge crosses (usually bottom, off-center);
+    the top edge is always pierced by feeds. Validate with the drawio-skill's
+    validate.py --score until 0; export PNG headlessly and self-inspect
+    before delivering. Never deliver a diagram you have not seen rendered.
