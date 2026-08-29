@@ -673,3 +673,9 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Pages created: 1 (`findings/hybrid-evolution-narrative.md`)
 - Pages updated: 2 (`index.md`, `log.md`)
 - Summary: The four-stage architectural narrative with per-stage inputs/outputs/rationale — baseline one-network → IoU score transfer → RoIAlign+head → stacked composition MLP — each transition motivated by the previous stage's measured failure. Diagram-ready source for Brandon's figures.
+
+## [2026-08-29] ARTIFACT — Evolution diagram set (5 IEEE-grade figures)
+- Built: stage0 baseline (rebuilt from code after review), stage1 score transfer, stage2 RoIAlign head, stage3 composition MLP, stage4 phrase head — ~/Downloads/evolution_diagrams/ (.drawio + .png + README.md)
+- Process: validator score 0 each + two crucible rounds (5 technical reviewers vs source code: 35 findings; 5 visual reviewers on renders: 44 findings; all applied)
+- Notable: crucible caught that the old retinanet3d_detailed_v6 drew an Inception-I3D backbone; the baseline code is ResNet50-I3D (resnetFPN.py) — stem 1x7x7, temporal pool /2, C3/C4/C5 = 512/1024/2048, P6 from raw C5, 3-conv towers with 3x3x3 predictors, ego head at loss weights cls/8 + ego/4
+- Summary: the slideshow evolution narrative now has code-verified architecture figures for every stage.

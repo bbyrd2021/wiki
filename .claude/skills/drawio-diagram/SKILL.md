@@ -103,3 +103,16 @@ Conventions to follow at this detail level (~100-300 cells per figure):
     the top edge is always pierced by feeds. Validate with the drawio-skill's
     validate.py --score until 0; export PNG headlessly and self-inspect
     before delivering. Never deliver a diagram you have not seen rendered.
+
+12. **Crucible pipeline (Brandon 2026-08-29, standing for thesis figures)**: every
+    figure gets two adversarial review rounds — (a) technical: a reviewer refutes
+    every label/dim/number against the SOURCE CODE (never trust a template or memory;
+    the v6 baseline drew Inception-I3D where the code was ResNet50-I3D); (b) visual:
+    a reviewer judges the RENDERED PNG for IEEE quality. Fix everything, re-validate
+    to score 0 after each fix. Other lessons from the round: edge labels must be
+    shorter than their gap or floated above the line with a label offset
+    (mxPoint as="offset", y=-14); legend swatches must match drawn shapes (cube swatch
+    for cube tensors, a dashed-line row when gradient edges exist, drop rows for
+    styles not drawn); data tensors never take the frozen dash (dash = weights);
+    metric columns in notes use single spaces (double spaces align nothing in
+    proportional fonts).
