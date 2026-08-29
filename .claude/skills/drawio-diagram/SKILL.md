@@ -1,0 +1,38 @@
+# drawio-diagram
+
+Generate architecture diagrams as native draw.io (.drawio) XML files in the
+lab's house style, editable shape-by-shape in draw.io or diagrams.net.
+
+## When to use
+
+- `/drawio-diagram <name> "<description>"` or any request for an editable
+  architecture diagram. Prefer this over SVG/HTML when Brandon will edit the
+  figure himself (slides, thesis figures).
+
+## House style (the visual grammar — always include a legend)
+
+draw.io style strings:
+
+- **frozen component**: `rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1;dashed=1;dashPattern=5 4;fontFamily=Helvetica;fontSize=12;`
+- **trained component**: same but `strokeWidth=3;dashed=0;`
+- **plain / parameter-free op**: same but `strokeWidth=1;dashed=0;`
+- **note / retired**: `strokeColor=#999999;fontColor=#555555;strokeWidth=1;`
+- **eyebrow labels**: text cell, `text;html=1;fontSize=10;fontColor=#666666;fontStyle=1;spacing=0;` uppercase with letter-spacing via CSS not available — just uppercase.
+- **wires**: `edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#111111;strokeWidth=1;endArrow=block;endFill=1;` — label edges with what flows (shape + dims).
+- **coordinate-only / special wires**: `strokeWidth=2;` and a label; cached wires: `dashed=1;dashPattern=8 3;strokeColor=#555555;`
+
+## Rules (inherited from 6 adversarial review rounds)
+
+1. Every arrowhead terminates ON a box edge; label wires at BOTH ends if long.
+2. Dims everywhere: every tensor gets its shape; every layer its in/out sizes.
+3. Fan-outs drawn explicitly (distribution bar + per-target arrows), never implied.
+4. Dead-ends marked (an X or "discarded" note); nothing "exists but unclear".
+5. No lab jargon in visible text (no exp numbers); metric named; baselines defined.
+6. NO EM DASHES in any visible text (standing Brandon rule).
+7. Legend on every diagram mapping the border grammar.
+
+## Output
+
+Write `<name>.drawio` to ~/Downloads/ (or the asked location), send via
+SendUserFile. The file must open cleanly at app.diagrams.net. Keep one
+diagram per file, page size ~1100x800.
