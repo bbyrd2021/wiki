@@ -679,3 +679,8 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Process: validator score 0 each + two crucible rounds (5 technical reviewers vs source code: 35 findings; 5 visual reviewers on renders: 44 findings; all applied)
 - Notable: crucible caught that the old retinanet3d_detailed_v6 drew an Inception-I3D backbone; the baseline code is ResNet50-I3D (resnetFPN.py) — stem 1x7x7, temporal pool /2, C3/C4/C5 = 512/1024/2048, P6 from raw C5, 3-conv towers with 3x3x3 predictors, ego head at loss weights cls/8 + ego/4
 - Summary: the slideshow evolution narrative now has code-verified architecture figures for every stage.
+
+## [2026-08-29] UPDATE — Time-base clarity panels on the evolution diagram set
+- All 5 diagrams gained a consistent maroon TIME BASE inset (8 frame ticks, box's frame highlighted) answering Moradi's question: how do single-frame YOLO boxes relate to the 8-frame clips. Stage 2 variant adds the tick-to-slice arrow; Stage 4 variant shows the sliding window t-3..t+4.
+- Crucible pass on the new content surfaced three temporal subtleties now stated on the figures: (1) the full-candidate I3D dump selects ONE clip-level tube list (300 tubes by clip-mean agentness), per-frame lists are slices of it; (2) P3 carries only 4 distinct temporal samples duplicated in pairs to 8 slices (pool2 halves T, nearest x2 restores) — paired frames share a slice, relevant context for the motion-null flat-head result on true clips; (3) exp12 true-clip caching uses an 8-frame window CENTERED on the box's frame with center-slice readout, not the fixed clip partition.
+- evolution_writeup.html callouts corrected to match; figures re-exported at score 0.
