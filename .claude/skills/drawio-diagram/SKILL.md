@@ -58,3 +58,23 @@ Conventions to follow at this detail level (~100-300 cells per figure):
 - Frozen vs trained still encoded by border: dashed 5 4 = frozen, strokeWidth
   3 = trained, on top of the fill colors.
 - Dimension labels between every stage; arrows carry stride/shape changes.
+
+## Edge best practices (learned from Brandon's manual cleanup, 2026-08-29)
+
+1. **Every edge**: `rounded=1;jettySize=16;` in the style (soft corners,
+   consistent stubs). Never ship sharp multi-jog orthogonals.
+2. **Fan-ins of 3+ sources use a COLLECTOR BUS**: a thin filled bar
+   (`fillColor=#111111;height=3`), sources drop onto it with
+   `endArrow=none` vertical edges, then ONE arrowed edge per consumer
+   leaves the bus. Never draw N parallel orthogonal edges into one target.
+3. **Explicit exit/entry anchors on every edge** (`exitX/Y`, `entryX/Y`),
+   chains always right-edge → left-edge, taps always bottom → top.
+4. **Align rows**: shapes on the same logical row share a vertical center so
+   horizontal runs are straight; cubes are vertically centered to the block
+   row they sit in.
+5. **Column locality**: derive-from relationships (e.g. P6/P7 from C5's lane)
+   live in the SAME column as their source; outputs of a block sit directly
+   right of or below it. Long cross-canvas edges mean the layout is wrong,
+   not the edge.
+6. Side-by-side beats stacked when two consumers share one producer (heads
+   under a bus), so no through-shape wiring is ever needed.
