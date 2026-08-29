@@ -36,3 +36,25 @@ draw.io style strings:
 Write `<name>.drawio` to ~/Downloads/ (or the asked location), send via
 SendUserFile. The file must open cleanly at app.diagrams.net. Keep one
 diagram per file, page size ~1100x800.
+
+## Template-grade detail mode (Brandon 2026-08-29: default for slide/thesis figures)
+
+Source vocabulary: ~/Downloads/drawio_examples/drawio-nn-templates/ (mxlibrary
+shape libraries; load into draw.io via File > Open Library). Reference
+diagrams extracted: template_ref_Yolo_V1.drawio, template_ref_Action_Recognition.drawio.
+
+Conventions to follow at this detail level (~100-300 cells per figure):
+- **Feature maps / tensors = isometric cubes**:
+  `shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;size=<depth-px>;`
+  Cube width/height proportional to spatial dims; channel count as the cube's
+  bounded label; spatial dims as small free text along the cube's edges.
+- **Every layer drawn**: conv/pool/attention blocks as colored rounded rects
+  with kernel/stride/channels in the label. No "backbone" black boxes.
+- **Palette semantics** (draw.io standard fills):
+  green #d5e8d4 = inputs · blue #dae8fc = conv/compute · orange #ffe6cc
+  (stroke #d79b00) / #fad7ac = feature-map cubes · yellow #fff2cc = pooling
+  and elementwise ops · red #f8cecc = heads/losses/outputs · purple #e1d5e7 =
+  recurrent/temporal modules · gray #f5f5f5 = post-processing (NMS etc.)
+- Frozen vs trained still encoded by border: dashed 5 4 = frozen, strokeWidth
+  3 = trained, on top of the fill colors.
+- Dimension labels between every stage; arrows carry stride/shape changes.
