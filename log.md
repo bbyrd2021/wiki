@@ -688,3 +688,6 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 ## [2026-08-29] UPDATE — Crop probe booked; full crop run staged on NCShare H200s
 - findings/exp12-phrase-head-attribution.md: +crop-probe addendum (crop flat 16.93/18.75/13.60/6.85 vs featmap flat 12.78/15.40/7.29/4.01 on matched subset; phrase head keeps only the triplet edge on crops)
 - NCShare staging: 44.8 GB frames + dumps rsynced to ~/road_crop; standalone cacher with --nshard/--ishard; Slurm chain = Miniforge env build then val 4x + train 8x H200 arrays via afterok dependency. Gotchas hit and solved: login-node cgroup kills pip; compute nodes lack python3-venv (Miniforge instead); NFS silly-rename blocks rm of half-built venv.
+
+## [2026-08-30] UPDATE — Thesis stretch goal: IDIL-shaped staged fine-tuning
+- directions/thesis-proposal-fall-2026.md: +stretch-goal section. Class-frequency staged fine-tuning at the LoRA rung, IDIL's staging idea (from SparseTemporalPIE) transferred to the long-tail axis, backed by decoupled-training literature.

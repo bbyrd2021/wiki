@@ -3,7 +3,7 @@ type: direction
 title: "Thesis Proposal — Hybrid Detection + Language-Geometry Composition (Fall 2026)"
 aliases: []
 created: 2026-08-26
-updated: 2026-08-26
+updated: 2026-08-30
 sources:
   - "ROAD_Reason/experiments/exp11_yolo"
 tags: [direction, thesis, proposal, road-plusplus, contrastive, exp11]
@@ -44,6 +44,23 @@ Three measured conditions: soft t-norm binds through a coupled backbone
 sweep), and is superseded by hard vocabulary constraints (stacked MLP: zero
 composed violations by construction). See
 [[concepts/neuro-symbolic-constraints]].
+
+## Stretch goal — IDIL-shaped staged fine-tuning for the tail (Brandon 2026-08-30)
+
+Adapt the IDIL idea from [[findings/sparse-temporal-pie|SparseTemporalPIE]] (Intention
+Domain Incremental Learning: staged training along an ordered domain axis, which there
+was time-to-event) to the thesis problem's ordered axis: **class frequency**. At the
+fine-tuning rung (1B InternVideo2 + LoRA on crop inputs), train in staged tiers from
+common to rare classes, protecting earlier tiers as rarer ones are admitted.
+
+- Why it clears the evidence bar: staged/decoupled long-tail training has established
+  literature (decoupled representation vs classifier, cRT: Kang et al. 2020) beyond the
+  in-house IDIL result (pre-IL 0.854 to 0.926 accuracy on PIE).
+- Why the fine-tuning rung: IDIL's gain in SparseTemporalPIE came from backbone
+  adaptation across the staged curriculum; with frozen encoders and linear heads there
+  is no backbone to adapt, so the idea only bites once LoRA unfreezes the encoder.
+- Status: STRETCH — after the crop record row, the 1B encoder swap, and plain LoRA
+  fine-tuning are secured; one controlled variable on top of the ladder.
 
 ## Timeline (compressed — defense by October, per Brandon 2026-08-26)
 
