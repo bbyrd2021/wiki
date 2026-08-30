@@ -3,7 +3,7 @@ type: finding
 title: "Exp12 — The Phrase Head Works; Features Are the Lever"
 aliases: []
 created: 2026-08-27
-updated: 2026-08-27
+updated: 2026-08-29
 sources:
   - "ROAD_Reason/experiments/exp12_phrase_head/DESIGN.md"
 tags: [finding, exp12, contrastive, phrase-head, internvideo2, road-plusplus, f-map]
@@ -73,6 +73,28 @@ One lever, two upgrades, both unmeasured: true 8-frame clips (cheap re-cache)
 and the InternVideo2-1B flagship (integration risk). The mechanism's full
 effect (+1.4/+1.1) waits on genuinely aligned features. Timebox per
 [[directions/thesis-proposal-fall-2026]]: hard mid-September go/no-go.
+
+## Addendum 2026-08-29 — crop probe: resolution is the bottleneck, proven
+
+Four-way probe on a matched frame subset (every Nth frame, identical rows, featmap
+comparators restricted to the same frames): 2x-padded RoI crops through the same
+frozen CLIP_S encoder vs full-frame feature-map pooling.
+
+| f-mAP % (probe subset) | action | loc | duplex | triplet |
+|---|---|---|---|---|
+| featmap, flat head | 12.78 | 15.40 | 7.29 | 4.01 |
+| featmap, phrase head | 13.64 | 15.76 | 9.71 | 5.38 |
+| crop, flat head | **16.93** | **18.75** | **13.60** | 6.85 |
+| crop, phrase head | 15.09 | 16.22 | 12.81 | **7.44** |
+
+Read: cropping moves the flat head +4.15 action / +6.31 duplex, dwarfing both the
+phrase mechanism's gains and true motion (see 08-27 addendum). On strong crop
+features the phrase head keeps only the triplet edge (7.44 vs 6.85): the language
+prior matters most exactly where classes are rarest. Probe rows are subset-only;
+do NOT compare against full-val rows.
+
+Consequence: full-coverage crop caching launched on NCShare H200s (12-way Slurm
+array; see log 2026-08-29). End-game stack = crop features + composition MLP.
 
 ## Related
 
