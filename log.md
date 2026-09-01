@@ -707,3 +707,7 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 
 ## [2026-09-01] UPDATE — Exp14 design refined: stack discards phrase triplet scores by construction
 - Brandon's mechanistic catch: the comp MLP eats primitives only and replaces compositions, so the phrase head's triplet strength never enters the stack while its primitive weakness does. Exp14 = feed phrase duplex+triplet sigmoids into the MLP (1208-d input).
+
+## [2026-09-01] INGEST — Text-encoder literature grounding for the phrase head
+- Pages created: 1 (concepts/text-encoder-choice-phrase-head.md)
+- Summary: defense-ready literature case that the paired text tower is the correct choice in a frozen-feature regime (CLIP/LiT principle; ViLD/Detic/OWL-ViT/YOLO-World precedent), that LLM-authored phrases have citable precedent (CuPL, DCLIP) with WaffleCLIP as the caution, and that upgrades go by encoder PAIRS (1B InternVideo2, SigLIP2) or LiT-style adaptation.

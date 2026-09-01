@@ -1,7 +1,7 @@
 ---
 type: index
 updated: 2026-09-01
-total_pages: 134
+total_pages: 135
 ---
 
 # Research Wiki — Index
@@ -46,6 +46,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 ## Concepts (10)
 
 ### Pedestrian Intent
+- [[concepts/text-encoder-choice-phrase-head|Text encoder choice]] — alignment beats standalone quality; paired-tower literature (ViLD, Detic, OWL-ViT, YOLO-World) + phrase-wording ablation grounding
 - [[concepts/crossing-intent|Crossing Intent]] — mental state (intent) vs. observed behavior (action); how each dataset defines and measures it
 - [[concepts/gaze-and-attention|Gaze and Attention]] — the look label in JAAD/PIE; gaze means commitment in JAAD, hesitation in PIE
 - [[concepts/intention-probability|Intention Probability]] — PIE's crowd-sourced continuous intent score; mean=0.712, median=0.850, bimodal
