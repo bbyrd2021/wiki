@@ -135,3 +135,16 @@ Conventions to follow at this detail level (~100-300 cells per figure):
     new occupant) so consecutive slides read as diffs. Paper-tier register:
     cube tensors, trapezoid encoders, fs24/15/14/12 type ladder, one
     identical output-box text per series.
+
+15. **Image-first crucible (Brandon 2026-09-01, after XML-first reviews missed
+    broken renders)**: visual reviewers MUST Read the rendered PNG before the
+    XML and describe what they SEE at 2x mental zoom, region by region; the
+    XML is only for locating fixes. Reviewer prompts must include the
+    drawio-skill reference rules: >=20px final straight segment before every
+    arrowhead; pinned + distributed anchors on any shape with 2+ edges per
+    side; center-alignment before routing; rotated shapes (direction=north
+    trapezoids) remap anchors - EMPIRICALLY TEST the mapping with a 4-edge
+    probe render before pinning (north trapezoid: left tip=(0.5,0), right
+    face=(0.5,1), top slant=(1,0.5), bottom slant=(0,0.5)). The author must
+    personally view EVERY rendered figure before delivery - no exceptions,
+    including batch builds.
