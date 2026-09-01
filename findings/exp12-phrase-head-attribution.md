@@ -3,7 +3,7 @@ type: finding
 title: "Exp12 — The Phrase Head Works; Features Are the Lever"
 aliases: []
 created: 2026-08-27
-updated: 2026-08-29
+updated: 2026-09-01
 sources:
   - "ROAD_Reason/experiments/exp12_phrase_head/DESIGN.md"
 tags: [finding, exp12, contrastive, phrase-head, internvideo2, road-plusplus, f-map]
@@ -95,6 +95,23 @@ do NOT compare against full-val rows.
 
 Consequence: full-coverage crop caching launched on NCShare H200s (12-way Slurm
 array; see log 2026-08-29). End-game stack = crop features + composition MLP.
+
+## Addendum 2026-09-01 — crops trade position for resolution (Brandon's read)
+
+First full-val crop rows confirm the probe AND expose the trade cleanly. Probe-trained
+flat head on full val: action 16.62 / loc 18.55 / duplex 13.29 / triplet 6.63 vs the
+I3D flat head's 15.92 / 19.60 / 11.13 / 6.65. Crops win action and duplex, tie triplet,
+and LOSE location, and Brandon's explanation is the right one: ROAD location classes
+are ego-relative scene positions (left pavement, incoming lane, junction). Cropping
+normalizes away exactly that evidence; two pedestrians on opposite pavements produce
+near-identical crops. The I3D feature-map slice keeps global context through its
+receptive field for free.
+
+**Candidate ablation (evidence-motivated, run after the current sweep settles):**
+append the box's normalized coordinates [x, y, w, h] from the YOLO dump to the 1024-d
+crop feature and retrain the heads (1028-d input). Hypothesis: recovers most of the
+1.05 location gap at near-zero cost, since it restores the positional information the
+crop destroyed. One variable, cached features only, no re-encoding.
 
 ## Related
 

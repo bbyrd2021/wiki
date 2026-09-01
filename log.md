@@ -691,3 +691,7 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 
 ## [2026-08-30] UPDATE — Thesis stretch goal: IDIL-shaped staged fine-tuning
 - directions/thesis-proposal-fall-2026.md: +stretch-goal section. Class-frequency staged fine-tuning at the LoRA rung, IDIL's staging idea (from SparseTemporalPIE) transferred to the long-tail axis, backed by decoupled-training literature.
+
+## [2026-09-01] UPDATE — Full-val crop rows landing; crop-context trade recorded
+- First two full-val crop rows (probe-trained heads) confirm the probe within 0.3 everywhere. Crops beat I3D features on action/duplex, lose location.
+- Brandon's insight recorded in findings/exp12-phrase-head-attribution.md: location classes are ego-relative, crops destroy position; candidate ablation = append normalized box coords to the crop feature (1028-d head input).
