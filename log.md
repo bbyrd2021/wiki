@@ -711,3 +711,6 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 ## [2026-09-01] INGEST — Text-encoder literature grounding for the phrase head
 - Pages created: 1 (concepts/text-encoder-choice-phrase-head.md)
 - Summary: defense-ready literature case that the paired text tower is the correct choice in a frozen-feature regime (CLIP/LiT principle; ViLD/Detic/OWL-ViT/YOLO-World precedent), that LLM-authored phrases have citable precedent (CuPL, DCLIP) with WaffleCLIP as the caution, and that upgrades go by encoder PAIRS (1B InternVideo2, SigLIP2) or LiT-style adaptation.
+
+## [2026-09-01] UPDATE — Vocabulary provenance ablation: mechanism robust to deterministic phrases
+- gen_phrases.py (deterministic, glossary-based) replaces chat-authored phrases; crop phrase head retrained: 17.80/20.20/14.92/8.93 vs 18.09/19.38/15.16/8.94. Within 0.3 everywhere, loc +0.8. Amber stays collapsed under rewording: fusion motivation strengthened.

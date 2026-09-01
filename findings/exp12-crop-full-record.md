@@ -45,6 +45,18 @@ confirmed the probe within 0.3 everywhere before the full rows landed.
    specialist by construction. The stack equalizes aggregates (ties within 0.2) and
    absorbs the specialization: stack-level rare-49 is a coin flip (23/49, -0.24).
 
+## Vocabulary provenance ablation (2026-09-01)
+
+The hand-authored phrases were replaced by a deterministic generator
+(gen_phrases.py: 4 template rules over a documented glossary in ROAD-paper
+nomenclature; 135/183 phrases differ) and the crop phrase head retrained on
+identical features: 17.80 / 20.20 / 14.92 / 8.93 vs the original 18.09 / 19.38 /
+15.16 / 8.94. Every head within 0.3 except location (+0.8). The mechanism does not
+depend on hand wording; the vocabulary is now auditable. Traffic lights improve
+slightly under behavioral wording (Red 59.9, Green 40.8) but Amber stays collapsed
+(6.25): near-synonym collinearity survives rewording, which strengthens the
+class-wise fusion motivation (Amber wants free weights).
+
 ## The evidence-motivated next rung
 
 The stack currently averages away the phrase head's tail specialization, and the
