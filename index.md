@@ -1,7 +1,7 @@
 ---
 type: index
-updated: 2026-08-27
-total_pages: 133
+updated: 2026-09-01
+total_pages: 134
 ---
 
 # Research Wiki — Index
@@ -161,6 +161,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 
 ## Findings (23)
 
+- [[findings/exp12-crop-full-record|Crop-full record]] — new best on every head (duplex 17.94, triplet 11.13); phrase head isolated as a tail specialist (37/49 rarest triplets)
 - [[findings/jaad-gaze-findings|JAAD Gaze Findings]] — walking+looking → 95.7% cross at decision_point; standing+not-looking → 44.9% (lowest ambiguity pair)
 - [[findings/pie-gaze-reversal|PIE Gaze Reversal]] — walking+not-looking → 74.1% cross (higher than walking+looking 56%); gaze sign reverses from JAAD
 - [[findings/pie-intention-bimodality|PIE Intention Bimodality]] — mean=0.712, median=0.850; 42.5% of peds at 0.9–1.0; binarization discards calibration

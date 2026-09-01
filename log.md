@@ -695,3 +695,9 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 ## [2026-09-01] UPDATE — Full-val crop rows landing; crop-context trade recorded
 - First two full-val crop rows (probe-trained heads) confirm the probe within 0.3 everywhere. Crops beat I3D features on action/duplex, lose location.
 - Brandon's insight recorded in findings/exp12-phrase-head-attribution.md: location classes are ego-relative, crops destroy position; candidate ablation = append normalized box coords to the crop feature (1028-d head input).
+
+## [2026-09-01] FINDING — Crop-full sweep: NEW RECORD on every head
+- Pages created: 1 (findings/exp12-crop-full-record.md)
+- Pages updated: index.md, log.md
+- New record row: crop flat + comp MLP = 18.99 action / 22.31 loc / 17.94 duplex / 11.13 triplet (old record 15.92/19.60/15.52/9.73). Phrase stack ties compositions within 0.2.
+- Mechanism isolated: raw phrase head wins 37/49 rarest triplets (+1.90) and loses common 37 (-1.41) on identical features — a tail specialist; the stack absorbs the specialization. Next rung: class-wise fusion.
