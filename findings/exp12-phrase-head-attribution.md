@@ -107,6 +107,14 @@ normalizes away exactly that evidence; two pedestrians on opposite pavements pro
 near-identical crops. The I3D feature-map slice keeps global context through its
 receptive field for free.
 
+**CORRECTION, same day:** the location deficit is a LOW-TRAINING-DATA artifact, not
+a standing property. The fully-trained crop flat head (all 3.7M rows) scores loc 22.31,
+BEATING I3D's 19.60 — alongside action 18.99 and duplex 15.71, the latter passing the
+15.52 record with no composition stack at all. Brandon's ego-relative argument survives
+as the explanation for why location was the slowest head to benefit from crops (it needs
+the most data to recover positional evidence from 2x-padded context alone); the
+coordinate-append ablation remains queued as possible upside, with weakened urgency.
+
 **Candidate ablation (evidence-motivated, run after the current sweep settles):**
 append the box's normalized coordinates [x, y, w, h] from the YOLO dump to the 1024-d
 crop feature and retrain the heads (1028-d input). Hypothesis: recovers most of the
