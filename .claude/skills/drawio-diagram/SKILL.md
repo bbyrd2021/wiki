@@ -125,3 +125,13 @@ Conventions to follow at this detail level (~100-300 cells per figure):
     "Every label is a promise": a defense figure shows exactly the ideas the
     author wants questioned, nothing else. Build abstract versions with the
     same validate + self-inspect pipeline.
+
+14. **Station consistency across figure series (Brandon 2026-09-01)**: in a
+    multi-stage evolution set, common components keep FIXED canvas positions
+    across all figures (detector top-left, backbone bottom-left, feature
+    tensors center, output box far right, legend top-right). The stage's new
+    machinery always occupies the same "innovation zone" (center-right) with
+    trained-thick borders. Component swaps happen in-place (same station,
+    new occupant) so consecutive slides read as diffs. Paper-tier register:
+    cube tensors, trapezoid encoders, fs24/15/14/12 type ladder, one
+    identical output-box text per series.
