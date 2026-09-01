@@ -47,10 +47,18 @@ confirmed the probe within 0.3 everywhere before the full rows landed.
 
 ## The evidence-motivated next rung
 
-The stack currently averages away the phrase head's tail specialization. Class-wise
-fusion (phrase scores for tail classes, flat scores for head classes, or both primitive
-sets into one MLP) is the obvious cheap ablation: the 37/49 + opposite-sign deltas are
-the direct evidence that the two heads know different things.
+The stack currently averages away the phrase head's tail specialization, and the
+mechanism is structural (Brandon 2026-09-01): the MLP consumes only PRIMITIVE sigmoids
+plus the feature and REPLACES the composition columns, so the phrase head's superior
+triplet scores (where every rare triplet has its own phrase) are discarded by
+construction, while its weaker common-class primitives are kept. The architecture is
+accidentally rigged against the mechanism.
+
+Refined exp14 design: feed the phrase head's ungated duplex+triplet sigmoids into the
+composition MLP as additional inputs (49 primitives + 135 phrase compositions + 1024
+feature = 1208-d), letting the MLP learn where to trust the language prior. The 37/49
+raw-head tail dominance plus the discard-by-construction analysis is the direct
+evidence.
 
 ## Provenance
 

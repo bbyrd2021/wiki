@@ -704,3 +704,6 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 
 ## [2026-09-01] UPDATE — Crop-full sweep christened Exp13
 - Ledger name Exp13 adopted (rows relabeled in workbook + remote TSV; alias added to findings/exp12-crop-full-record.md). Files remain in exp12_phrase_head/crop_full/; no paths moved (provenance asserts store absolute ckpt paths).
+
+## [2026-09-01] UPDATE — Exp14 design refined: stack discards phrase triplet scores by construction
+- Brandon's mechanistic catch: the comp MLP eats primitives only and replaces compositions, so the phrase head's triplet strength never enters the stack while its primitive weakness does. Exp14 = feed phrase duplex+triplet sigmoids into the MLP (1208-d input).
