@@ -116,3 +116,12 @@ Conventions to follow at this detail level (~100-300 cells per figure):
     styles not drawn); data tensors never take the frozen dash (dash = weights);
     metric columns in notes use single spaces (double spaces align nothing in
     proportional fonts).
+
+13. **Two-tier figure system (Moradi feedback 2026-09-01)**: detailed figures
+    (rules 1-12) are DEFENSE PREP and thesis appendix material; anything
+    Moradi-facing or publication-facing defaults to ABSTRACT tier: 5-8 shapes,
+    fontSize 15+, no tensor dims, no training panels, no metric boxes, one
+    caption sentence, frozen/trained border grammar with a 2-item legend only.
+    "Every label is a promise": a defense figure shows exactly the ideas the
+    author wants questioned, nothing else. Build abstract versions with the
+    same validate + self-inspect pipeline.
