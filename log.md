@@ -701,3 +701,6 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Pages updated: index.md, log.md
 - New record row: crop flat + comp MLP = 18.99 action / 22.31 loc / 17.94 duplex / 11.13 triplet (old record 15.92/19.60/15.52/9.73). Phrase stack ties compositions within 0.2.
 - Mechanism isolated: raw phrase head wins 37/49 rarest triplets (+1.90) and loses common 37 (-1.41) on identical features — a tail specialist; the stack absorbs the specialization. Next rung: class-wise fusion.
+
+## [2026-09-01] UPDATE — Crop-full sweep christened Exp13
+- Ledger name Exp13 adopted (rows relabeled in workbook + remote TSV; alias added to findings/exp12-crop-full-record.md). Files remain in exp12_phrase_head/crop_full/; no paths moved (provenance asserts store absolute ckpt paths).

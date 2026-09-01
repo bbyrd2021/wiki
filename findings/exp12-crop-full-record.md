@@ -1,7 +1,7 @@
 ---
 type: finding
 title: "Crop-full sweep: new record on every head; phrase head is a tail specialist"
-aliases: []
+aliases: [exp13, exp13-crop-full]
 created: 2026-09-01
 updated: 2026-09-01
 sources:
@@ -53,6 +53,8 @@ sets into one MLP) is the obvious cheap ablation: the 37/49 + opposite-sign delt
 the direct evidence that the two heads know different things.
 
 ## Provenance
+
+**Ledger name: Exp13** (Brandon 2026-09-01). Files live in exp12_phrase_head/crop_full/ because the sweep reuses exp12's phrase embeddings, trainers and eval path; exp13 is the ledger identity of the full-coverage crop sweep and its six rows.
 
 Caches: crop_feats_train.pkl (115,602 frames, 8 H200 shards), crop_feats_val.pkl
 (37,931 frames, 3 H200 shards + local A6000 finish after /work purge). Heads and
