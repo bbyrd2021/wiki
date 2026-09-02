@@ -714,3 +714,8 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 
 ## [2026-09-01] UPDATE — Vocabulary provenance ablation: mechanism robust to deterministic phrases
 - gen_phrases.py (deterministic, glossary-based) replaces chat-authored phrases; crop phrase head retrained: 17.80/20.20/14.92/8.93 vs 18.09/19.38/15.16/8.94. Within 0.3 everywhere, loc +0.8. Amber stays collapsed under rewording: fusion motivation strengthened.
+
+## [2026-09-02] UPDATE — Evolution figure set: styling, badges, YOLO twin baseline
+- Pages updated: 2 (`findings/hybrid-evolution-narrative.md` +Figures section, `.claude/skills/drawio-diagram/SKILL.md` +rule 16)
+- Source: ~/Downloads/evolution_diagrams/ (gen_paper_stages.py, gen_paper_yolo.py), ultralytics 8.3.226 yaml + exp11 best.pt
+- Summary: Booked the finished paper-tier set — six station-consistent figures including the new YOLOv8x replicated-baseline twin (verified against the trained checkpoint), fire/ice SVG badge grammar, semantic-color styling, code-verified input dims, 4x transparent exports, and the stage-1 caption precision fix (scores copied from 3D-RetinaNet onto YOLO boxes, not "transferred heads"). Skill rule 16 captures the reusable craft: badge technique, style grammar, and the silent stale-PNG export gotcha.

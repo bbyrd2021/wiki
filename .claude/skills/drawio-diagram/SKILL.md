@@ -104,6 +104,34 @@ Conventions to follow at this detail level (~100-300 cells per figure):
     validate.py --score until 0; export PNG headlessly and self-inspect
     before delivering. Never deliver a diagram you have not seen rendered.
 
+16. **Style + badge grammar for the evolution set (Brandon 2026-09-01/02)**:
+    (a) Semantic borders: every fill takes its own darker stroke
+    (#d5e8d4→#82b366, #fff2cc→#d6b656, #f8cecc→#b85450, #f5f5f5→#909090),
+    never uniform black; encoder trapezoids and tensor cubes get a light
+    wash of their identity color; rounded=1;arcSize=6 on boxes; italic
+    (fontStyle=2) bottom captions; per-stage accent bar under the title
+    keyed to the stage's new component. Edges stay black — neutral wires +
+    colored nodes is what keeps it IEEE rather than infographic.
+    (b) Trained/frozen badges are inline-SVG data-URI image cells (40px,
+    top-right corner of every model shape): flame = trained, isometric ice
+    cube = frozen. Never use emoji text (color-emoji font availability is
+    not portable); URL-encode the SVG with no semicolons inside (semicolons
+    terminate drawio style keys). Repeat the two icons beside the legend's
+    trained/frozen rows so the grammar is defined on-figure. Corner badges
+    register as validate.py "overlaps" — intentional; expected overlap
+    count = badge count.
+    (c) Input boxes always carry code-verified dims as a smaller second
+    line (inline `<font style='font-size:12px'>`), and widening a box for
+    text must preserve the >=20px arrow runway to the next shape (rule 15).
+    (d) Slide exports: `-s 4 -t` (4x, transparent). Edge-label white chips
+    (labelBackgroundColor) show on dark slides — light-slide assumption,
+    or restyle for dark. GOTCHA: the drawio CLI resolves paths against the
+    CWD and a `>/dev/null 2>&1` export fails silently, leaving a STALE PNG
+    that then passes visual review — always `cd` to the diagrams directory
+    (or use absolute paths) and check the PNG mtime before viewing.
+    (e) Captions name models, not roles, and say what moves: "scores are
+    copied from A's detections onto B's boxes," never "transferred heads."
+
 12. **Crucible pipeline (Brandon 2026-08-29, standing for thesis figures)**: every
     figure gets two adversarial review rounds — (a) technical: a reviewer refutes
     every label/dim/number against the SOURCE CODE (never trust a template or memory;

@@ -3,7 +3,7 @@ type: finding
 title: "From One Network to the Sweep — Evolution of the Hybrid"
 aliases: []
 created: 2026-08-27
-updated: 2026-08-27
+updated: 2026-09-02
 sources:
   - "ROAD_Reason/experiments/exp11_yolo"
 tags: [finding, narrative, exp11, hybrid, yolo, i3d, roialign, stacked-mlp, road-plusplus]
@@ -179,6 +179,45 @@ Stage 1 bought localization (+18.6 agent), Stage 2 bought classification
 everywhere features reach (+3.1 action, +6.2 loc), Stage 3 bought
 composition (+4.4 duplex, +2.9 triplet). Nothing retrained twice; every
 surviving component frozen in the next stage.
+
+## The figure set (paper tier, 2026-09-02)
+
+Six figures in `~/Downloads/evolution_diagrams/` (`paper_stage*.{drawio,png}`),
+generated from `gen_paper_stages.py` / `gen_paper_yolo.py` except the
+3D-RetinaNet baseline, which is Brandon's hand-edited canonical file
+(restyled in place, backup kept):
+
+- **Two twin baselines** — `paper_stage0_retinanet` and `paper_stage0_yolov8x`
+  share one composition (backbone funnel, feature cascade, pyramid, heads,
+  dashed detail inset, same street-photo input) so they read as "same
+  replicate-first treatment, two detectors." The YOLO figure was verified
+  claim-by-claim against the installed ultralytics 8.3.226 yaml and the
+  exp11 `best.pt` checkpoint itself (Detect head: Conv3x3 ×2 → Conv1x1 per
+  branch, reg_max 16, nc 10, max_det 300).
+- **Four evolution stages** — `paper_stage1_transfer` through
+  `paper_stage4_phrase`, station-consistent so consecutive slides read as
+  diffs.
+- **Badge grammar** — 40px inline-SVG corner badges: fire = trained,
+  3D ice cube = frozen, defined in each legend. The flame migrates stage to
+  stage (YOLO → linear head → composition MLP → projection) while ice
+  accumulates behind it; both stage-0 baselines are all fire, no ice.
+- **Style grammar** — semantic borders (each fill's darker shade), tinted
+  encoder trapezoids in identity colors (YOLO blue, 3D-RetinaNet magenta,
+  InternVideo2 teal), per-stage accent bar keyed to that stage's new
+  component, input boxes carry code-verified dims (`[3, 600, 840]` frame,
+  `[3, 8, 600, 840]` clip, `[n, 3, 8, 224, 224]` crops).
+- **Exports** — 4x scale, transparent background (slide-ready; edge-label
+  chips assume light slides).
+
+**Caption precision (Brandon 2026-09-02).** Stage 1's caption originally
+said "transferred heads are copied" — wrong on both counts: the *heads*
+never move (their *scores* are copied), and it never named the source
+model. Corrected to: "Each YOLO box takes the action, location, duplex and
+triplet scores of the 3D-RetinaNet detection it overlaps; no match means
+zeros on those four heads." The direction matters and is easy to invert
+when summarizing: YOLO (the stronger detector) supplies boxes + conf +
+agent scores; the four composition-head scores flow **from 3D-RetinaNet
+onto YOLO's boxes**, never the reverse — YOLO has no such heads.
 
 ## Related
 
