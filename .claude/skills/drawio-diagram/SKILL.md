@@ -121,8 +121,11 @@ Conventions to follow at this detail level (~100-300 cells per figure):
     register as validate.py "overlaps" — intentional; expected overlap
     count = badge count.
     (c) Input boxes always carry code-verified dims as a smaller second
-    line (inline `<font style='font-size:12px'>`), and widening a box for
+    line (inline `<font style='font-size:13px'>`), and widening a box for
     text must preserve the >=20px arrow runway to the next shape (rule 15).
+    Font floor (Brandon 2026-09-02): no text anywhere on a slide-bound
+    figure renders more than ONE size below box text — with 14pt boxes the
+    floor is 13pt, including edge labels, captions, and inset annotations.
     (d) Slide exports: `-s 4 -t` (4x, transparent). Edge-label white chips
     (labelBackgroundColor) show on dark slides — light-slide assumption,
     or restyle for dark. GOTCHA: the drawio CLI resolves paths against the

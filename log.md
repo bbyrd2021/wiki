@@ -719,3 +719,8 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Pages updated: 2 (`findings/hybrid-evolution-narrative.md` +Figures section, `.claude/skills/drawio-diagram/SKILL.md` +rule 16)
 - Source: ~/Downloads/evolution_diagrams/ (gen_paper_stages.py, gen_paper_yolo.py), ultralytics 8.3.226 yaml + exp11 best.pt
 - Summary: Booked the finished paper-tier set — six station-consistent figures including the new YOLOv8x replicated-baseline twin (verified against the trained checkpoint), fire/ice SVG badge grammar, semantic-color styling, code-verified input dims, 4x transparent exports, and the stage-1 caption precision fix (scores copied from 3D-RetinaNet onto YOLO boxes, not "transferred heads"). Skill rule 16 captures the reusable craft: badge technique, style grammar, and the silent stale-PNG export gotcha.
+
+## [2026-09-02] UPDATE — Figure set: stage 0 pt2 bridge figure, 13pt font floor
+- Pages updated: 2 (`findings/hybrid-evolution-narrative.md`, `.claude/skills/drawio-diagram/SKILL.md`)
+- Source: ~/Downloads/evolution_diagrams/ (gen_paper_stages.py)
+- Summary: Set grows to seven with paper_stage0_pt2, the baseline on the stage scaffold whose empty top row makes stage 1's YOLO arrival read as a diff; its caption records the corrected lifetime claim (stages 1 to 3 keep 3D-RetinaNet frozen, stage 4 replaces it, Brandon's catch). All seven re-set to a 13pt font floor after small labels blurred on projected slides; floor codified in skill rule 16c.

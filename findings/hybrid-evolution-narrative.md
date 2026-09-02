@@ -182,7 +182,7 @@ surviving component frozen in the next stage.
 
 ## The figure set (paper tier, 2026-09-02)
 
-Six figures in `~/Downloads/evolution_diagrams/` (`paper_stage*.{drawio,png}`),
+Seven figures in `~/Downloads/evolution_diagrams/` (`paper_stage*.{drawio,png}`),
 generated from `gen_paper_stages.py` / `gen_paper_yolo.py` except the
 3D-RetinaNet baseline, which is Brandon's hand-edited canonical file
 (restyled in place, backup kept):
@@ -194,6 +194,13 @@ generated from `gen_paper_stages.py` / `gen_paper_yolo.py` except the
   claim-by-claim against the installed ultralytics 8.3.226 yaml and the
   exp11 `best.pt` checkpoint itself (Detect head: Conv3x3 ×2 → Conv1x1 per
   branch, reg_max 16, nc 10, max_det 300).
+- **Stage 0 pt2** — `paper_stage0_pt2`, the baseline redrawn on the stage
+  scaffold as a bridge slide: bottom row only (clip → trained 3D-RetinaNet →
+  detections → output), top row deliberately empty so stage 1's YOLO arrival
+  reads as the diff. Its caption states the accurate lifetime (Brandon's
+  catch, 2026-09-02): stages 1 to 3 keep the network frozen and change how
+  it is read; stage 4 replaces it entirely — by the record configuration,
+  YOLO's boxes are the only stage-1 survivor.
 - **Four evolution stages** — `paper_stage1_transfer` through
   `paper_stage4_phrase`, station-consistent so consecutive slides read as
   diffs.
@@ -207,7 +214,9 @@ generated from `gen_paper_stages.py` / `gen_paper_yolo.py` except the
   component, input boxes carry code-verified dims (`[3, 600, 840]` frame,
   `[3, 8, 600, 840]` clip, `[n, 3, 8, 224, 224]` crops).
 - **Exports** — 4x scale, transparent background (slide-ready; edge-label
-  chips assume light slides).
+  chips assume light slides). Type ladder 24/15/14 with a 13pt floor:
+  no text on any figure renders more than one size below box text
+  (Brandon 2026-09-02, after small labels blurred on projected slides).
 
 **Caption precision (Brandon 2026-09-02).** Stage 1's caption originally
 said "transferred heads are copied" — wrong on both counts: the *heads*
