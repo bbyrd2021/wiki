@@ -736,3 +736,8 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Files updated: 8 wiki figure renders (`findings/figures/evolution-paper_stage*.png`, +stage5)
 - Source: exp11/exp12 code review by two-round crucible (technical + visual)
 - Summary: paper_stage5_record ("Stage 3's engine on Stage 4's crops") joins the set after a two-round crucible whose refutations corrected shared labels everywhere: frame tensor [3,1280,1920], crops [n,8,3,224,224], raw sigmoids into the concat with conf-gating at emission only, output box wording, and honest record attribution (crops lift action/location, MLP lifts duplex/triplet — action/loc are bit-identical to the flat crop head alone).
+
+## [2026-09-02] UPDATE — Principled triplet-tail definition: geometric-mean cutoff in log space
+- Pages updated: 2 (`findings/exp12-crop-full-record.md`, `findings/hybrid-evolution-narrative.md`)
+- Source: road_waymo_trainval_v1.1.json train-split counts (name-remapped via all_triplet_labels), per-class APs in exp11/exp12 results JSONs
+- Summary: Brandon's std-deviation question replaced the ad-hoc "49 rarest by val counts" with tail = below the geometric mean of train counts (z<0 in log10 space, 47/86 classes, <6,434 boxes; 46/49 overlap with the old split, so booked claims carry over). New exhibits: phrase 5.71 vs flat 3.52 on identical features; at z=-0.5 the contrastive head alone beats the record (4.63 vs 4.25); dose-response, the language advantage grows with rarity. Stage table extended to all six stages with the tail column.

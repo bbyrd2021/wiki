@@ -3,7 +3,7 @@ type: finding
 title: "Crop-full sweep: new record on every head; phrase head is a tail specialist"
 aliases: [exp13, exp13-crop-full]
 created: 2026-09-01
-updated: 2026-09-01
+updated: 2026-09-02
 sources:
   - "ROAD_Reason/experiments/exp12_phrase_head/crop_full"
 tags: []
@@ -56,6 +56,49 @@ depend on hand wording; the vocabulary is now auditable. Traffic lights improve
 slightly under behavioral wording (Red 59.9, Green 40.8) but Amber stays collapsed
 (6.25): near-synonym collinearity survives rewording, which strengthens the
 class-wise fusion motivation (Amber wants free weights).
+
+## Principled tail definition (2026-09-02)
+
+The original "49 rarest" split was ad hoc and ranked by val GT counts. The
+principled replacement, prompted by Brandon's std-deviation question: rank
+by **train-split instance counts** (v1.1 annotations, `all_triplet_labels`
+name-remapped to the 86-class benchmark vocab; every class has >= 61 train
+boxes, max 225,813) and cut in **log space**, where the power-law counts
+are roughly symmetric: log10 counts have mean 3.81, std 0.73.
+
+**Tail = classes below the geometric mean of train counts (z < 0, i.e.
+< 6,434 train boxes) -> 47 of 86 classes.** This nearly reproduces the
+ad-hoc split (46 of the old 49 overlap), so all previously booked
+tail-specialist claims carry over unchanged.
+
+Mean tail AP by stage (train-ranked membership, fixed class set per column):
+
+| stage | triplet (86) | z=0 tail (47 cls) | z=-0.5 (28 cls) | z=-1 (16 cls) |
+|---|---|---|---|---|
+| 0 baseline | 7.54 | 4.14 | 2.88 | 0.55 |
+| 1 copied scores | 6.81 | 3.43 | 2.19 | 0.50 |
+| 2 RoIAlign head | 6.65 | 2.60 | 1.47 | 0.54 |
+| 3 + comp MLP | 9.73 | 4.53 | 3.31 | 1.04 |
+| 4 phrase head (raw) | 8.94 | 5.71 | **4.63** | 1.65 |
+| 5 record (flat+MLP) | 11.13 | **5.72** | 4.25 | **2.04** |
+| flat head, same crops | — | 3.52 | 2.73 | 0.52 |
+
+Three claims this grounds:
+
+1. **Same features, only the classifier weights differ:** phrase 5.71 vs
+   flat 3.52 on the z=0 tail (+2.19). The language-weight advantage is not
+   a substrate effect.
+2. **At z=-0.5 the contrastive head alone beats the full record
+   configuration** (4.63 vs 4.25) with a single trained projection versus
+   trained head + MLP. The deeper the tail, the more language matters.
+3. **Dose-response:** the phrase-over-flat gap grows with rarity
+   (+2.19 at z=0, +1.90 at -0.5, +1.13 at -1 in a shrinking-AP regime) —
+   consistent with rare classes borrowing strength through wording, not
+   with a one-cutoff coincidence.
+
+Caveat: the z=-1 column (16 classes, APs near floor) is high-variance;
+don't build claims on it. Slide-safe framing: z=0 as the definition,
+z=-0.5 as the exhibit.
 
 ## The evidence-motivated next rung
 

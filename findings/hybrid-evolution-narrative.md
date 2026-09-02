@@ -168,17 +168,29 @@ and evidence carries compositional signal beyond the primitives.
 
 ## The evolution in one table
 
-| stage | agentness | agent | action | loc | duplex | triplet |
-|---|---|---|---|---|---|---|
-| 0 · baseline, one network | 35.36 | 16.67 | 13.23 | 12.77 | 11.32 | 7.54 |
-| 1 · + YOLO boxes, IoU-copied scores | 65.36 | 35.25 | 12.86 | 13.36 | 10.04 | 6.81 |
-| 2 · + RoIAlign features + trained head | 65.36 | 35.25 | 15.92 | 19.60 | 11.13 | 6.65 |
-| 3 · + stacked composition MLP | 65.36 | 35.25 | 15.92 | 19.60 | **15.52** | **9.73** |
+| stage | agentness | agent | action | loc | duplex | triplet | triplet tail* |
+|---|---|---|---|---|---|---|---|
+| 0 · baseline, one network | 35.36 | 16.67 | 13.23 | 12.77 | 11.32 | 7.54 | 4.14 |
+| 1 · + YOLO boxes, IoU-copied scores | 65.36 | 35.25 | 12.86 | 13.36 | 10.04 | 6.81 | 3.43 |
+| 2 · + RoIAlign features + trained head | 65.36 | 35.25 | 15.92 | 19.60 | 11.13 | 6.65 | 2.60 |
+| 3 · + stacked composition MLP | 65.36 | 35.25 | 15.92 | 19.60 | 15.52 | 9.73 | 4.53 |
+| 4 · contrastive phrase head on crops | 65.36 | 35.25 | 18.09 | 19.38 | 15.16 | 8.94 | 5.71 |
+| 5 · flat head + MLP on crops (record) | 65.36 | 35.25 | **18.99** | **22.31** | **17.94** | **11.13** | **5.72** |
+
+\* mean AP over the 47 triplet classes below the geometric mean of
+train-instance counts (< 6,434 train boxes; z < 0 in log10 space) — the
+principled tail definition, see [[findings/exp12-crop-full-record]].
+Stages 0–3 evaluate on 36,717 val frames, stages 4–5 on the
+36,716-frame crop-cache subset.
 
 Stage 1 bought localization (+18.6 agent), Stage 2 bought classification
 everywhere features reach (+3.1 action, +6.2 loc), Stage 3 bought
-composition (+4.4 duplex, +2.9 triplet). Nothing retrained twice; every
-surviving component frozen in the next stage.
+composition (+4.4 duplex, +2.9 triplet). Stage 4 traded average triplet
+for the tail (5.71, best single-mechanism tail; at the deeper z=-0.5 cut
+it beats even the record, 4.63 vs 4.25); Stage 5 recombined the Stage 3
+engine with Stage 4's features for the record on all four learned heads.
+Nothing retrained twice; every surviving component frozen in the next
+stage.
 
 ## The figure set (paper tier, 2026-09-02)
 
