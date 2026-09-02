@@ -182,7 +182,7 @@ surviving component frozen in the next stage.
 
 ## The figure set (paper tier, 2026-09-02)
 
-Seven figures in `~/Downloads/evolution_diagrams/` (`paper_stage*.{drawio,png}`),
+Eight figures in `~/Downloads/evolution_diagrams/` (`paper_stage*.{drawio,png}`),
 generated from `gen_paper_stages.py` / `gen_paper_yolo.py` except the
 3D-RetinaNet baseline, which is Brandon's hand-edited canonical file
 (restyled in place, backup kept):
@@ -204,6 +204,19 @@ generated from `gen_paper_stages.py` / `gen_paper_yolo.py` except the
 - **Four evolution stages** — `paper_stage1_transfer` through
   `paper_stage4_phrase`, station-consistent so consecutive slides read as
   diffs.
+- **The record figure** — `paper_stage5_record`, "Stage 3's engine on Stage
+  4's crops": station-identical to stage 4 on the left half (frozen YOLO,
+  crops, frozen InternVideo2) with the innovation zone swapped to the flat
+  head + concat + composition MLP. Survived a two-round crucible
+  (2026-09-02) that corrected the whole set: video frame is
+  `[3, 1280, 1920]` (1920x1280 native, YOLO imgsz 1280 — 840x600 is only
+  the I3D dump's box-coordinate convention), crops are `[n, 8, 3, 224, 224]`
+  (time-first per the cacher), the concat consumes RAW sigmoids with the
+  YOLO-conf gate applied only at emission (`sig_raw`, exp11 + exp12), a box
+  carries its one hard agent class (not 184 dense scores), and the record's
+  action/location are bit-identical to the flat crop head alone — the MLP
+  only overwrites the 135 composition columns, so the caption attributes:
+  crops lift action/location, the MLP lifts duplex/triplet.
 - **Badge grammar** — 40px inline-SVG corner badges: fire = trained,
   3D ice cube = frozen, defined in each legend. The flame migrates stage to
   stage (YOLO → linear head → composition MLP → projection) while ice
@@ -247,6 +260,10 @@ generated from `gen_paper_stages.py` / `gen_paper_yolo.py` except the
 **Stage 4 — InternVideo2 crops, language as classifier weights; 3D-RetinaNet fully replaced:**
 
 ![Stage 4, contrastive phrase head on crop features](figures/evolution-paper_stage4_phrase.png)
+
+**The record — Stage 3's engine on Stage 4's crops:**
+
+![The record configuration](figures/evolution-paper_stage5_record.png)
 
 **Caption precision (Brandon 2026-09-02).** Stage 1's caption originally
 said "transferred heads are copied" — wrong on both counts: the *heads*

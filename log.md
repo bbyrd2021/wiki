@@ -730,3 +730,9 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION �
 - Files added: 7 (`findings/figures/evolution-paper_stage*.png`, 2x white-background wiki renders, 1.6MB total)
 - Source: ~/Downloads/evolution_diagrams/*.drawio
 - Summary: The figure-set section now shows the actual figures in deck order (two baselines, pt2 bridge, stages 1-4) instead of describing them. Wiki copies are white-background 2x exports so they survive Obsidian dark mode; the 4x transparent slide masters stay in Downloads.
+
+## [2026-09-02] UPDATE — Record figure added; crucible corrections ripple through the set
+- Pages updated: 1 (`findings/hybrid-evolution-narrative.md`)
+- Files updated: 8 wiki figure renders (`findings/figures/evolution-paper_stage*.png`, +stage5)
+- Source: exp11/exp12 code review by two-round crucible (technical + visual)
+- Summary: paper_stage5_record ("Stage 3's engine on Stage 4's crops") joins the set after a two-round crucible whose refutations corrected shared labels everywhere: frame tensor [3,1280,1920], crops [n,8,3,224,224], raw sigmoids into the concat with conf-gating at emission only, output box wording, and honest record attribution (crops lift action/location, MLP lifts duplex/triplet — action/loc are bit-identical to the flat crop head alone).
