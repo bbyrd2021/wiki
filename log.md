@@ -746,3 +746,9 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION â€
 - Pages updated: 2 (`findings/exp12-crop-full-record.md`, `findings/hybrid-evolution-narrative.md`)
 - Source: ROAD_Reason/experiments/exp12_phrase_head/crop_full/ (train_comp_mlp_fusion.py, results_crop_full_fusion_mlp.json)
 - Summary: Exp14 ran same-day as designed. Feeding the phrase head's 135 composition sigmoids into the record's MLP (1208-d input) yields the best triplet tail at every cutoff (5.99/4.73/2.59 vs record 5.72/4.25/2.04), beating both parents, for -0.15 average triplet. Action/loc bit-identical to the record confirms the single-variable design. The fusion is the long-tail headline candidate; the record stays the averages ablation.
+
+## [2026-09-02] UPDATE â€” Fusion figure joins the set after a clean crucible
+- Pages updated: 1 (`findings/hybrid-evolution-narrative.md`)
+- Files updated: 5 wiki renders (stages 3-6 re-synced, +paper_stage6_fusion)
+- Source: gen_paper_stages.py; two-round crucible (technical: zero refutations, every number re-derived independently incl. train-count recount; visual: no blockers)
+- Summary: paper_stage6_fusion draws exp14 as stage 5 plus the phrase-scorer branch feeding the concat (input 49+135+1024). Crucible fixes rippled set-wide: phrase scorer restyled as a scoring module with the fire+ice pairing defined in the legend, [n,49] on the primitive wire, InternVideo2 versioned as -S, scaled-cosine-plus-bias wording, pass-through illusion at the detections box broken.

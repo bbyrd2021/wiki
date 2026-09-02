@@ -282,6 +282,10 @@ generated from `gen_paper_stages.py` / `gen_paper_yolo.py` except the
 
 ![The record configuration](figures/evolution-paper_stage5_record.png)
 
+**The fusion (exp14) — language evidence joins the engine:**
+
+![The fusion configuration](figures/evolution-paper_stage6_fusion.png)
+
 **Caption precision (Brandon 2026-09-02).** Stage 1's caption originally
 said "transferred heads are copied" — wrong on both counts: the *heads*
 never move (their *scores* are copied), and it never named the source
