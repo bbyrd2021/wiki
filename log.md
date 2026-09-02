@@ -741,3 +741,8 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION â€
 - Pages updated: 2 (`findings/exp12-crop-full-record.md`, `findings/hybrid-evolution-narrative.md`)
 - Source: road_waymo_trainval_v1.1.json train-split counts (name-remapped via all_triplet_labels), per-class APs in exp11/exp12 results JSONs
 - Summary: Brandon's std-deviation question replaced the ad-hoc "49 rarest by val counts" with tail = below the geometric mean of train counts (z<0 in log10 space, 47/86 classes, <6,434 boxes; 46/49 overlap with the old split, so booked claims carry over). New exhibits: phrase 5.71 vs flat 3.52 on identical features; at z=-0.5 the contrastive head alone beats the record (4.63 vs 4.25); dose-response, the language advantage grows with rarity. Stage table extended to all six stages with the tail column.
+
+## [2026-09-02] UPDATE â€” Exp14 fusion result: tail crown at every cutoff
+- Pages updated: 2 (`findings/exp12-crop-full-record.md`, `findings/hybrid-evolution-narrative.md`)
+- Source: ROAD_Reason/experiments/exp12_phrase_head/crop_full/ (train_comp_mlp_fusion.py, results_crop_full_fusion_mlp.json)
+- Summary: Exp14 ran same-day as designed. Feeding the phrase head's 135 composition sigmoids into the record's MLP (1208-d input) yields the best triplet tail at every cutoff (5.99/4.73/2.59 vs record 5.72/4.25/2.04), beating both parents, for -0.15 average triplet. Action/loc bit-identical to the record confirms the single-variable design. The fusion is the long-tail headline candidate; the record stays the averages ablation.

@@ -175,7 +175,8 @@ and evidence carries compositional signal beyond the primitives.
 | 2 · + RoIAlign features + trained head | 65.36 | 35.25 | 15.92 | 19.60 | 11.13 | 6.65 | 2.60 |
 | 3 · + stacked composition MLP | 65.36 | 35.25 | 15.92 | 19.60 | 15.52 | 9.73 | 4.53 |
 | 4 · contrastive phrase head on crops | 65.36 | 35.25 | 18.09 | 19.38 | 15.16 | 8.94 | 5.71 |
-| 5 · flat head + MLP on crops (record) | 65.36 | 35.25 | **18.99** | **22.31** | **17.94** | **11.13** | **5.72** |
+| 5 · flat head + MLP on crops (record) | 65.36 | 35.25 | **18.99** | **22.31** | **17.94** | **11.13** | 5.72 |
+| 5b · + phrase evidence into the MLP (exp14) | 65.36 | 35.25 | **18.99** | **22.31** | 17.76 | 10.98 | **5.99** |
 
 \* mean AP over the 47 triplet classes below the geometric mean of
 train-instance counts (< 6,434 train boxes; z < 0 in log10 space) — the
@@ -189,6 +190,10 @@ composition (+4.4 duplex, +2.9 triplet). Stage 4 traded average triplet
 for the tail (5.71, best single-mechanism tail; at the deeper z=-0.5 cut
 it beats even the record, 4.63 vs 4.25); Stage 5 recombined the Stage 3
 engine with Stage 4's features for the record on all four learned heads.
+The exp14 fusion (5b) feeds the phrase head's composition sigmoids into
+the same MLP: best tail at every cutoff (5.99 / 4.73 / 2.59) for -0.15
+average triplet — the long-tail configuration, per
+[[findings/exp12-crop-full-record]].
 Nothing retrained twice; every surviving component frozen in the next
 stage.
 

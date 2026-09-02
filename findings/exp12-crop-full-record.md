@@ -1,7 +1,7 @@
 ---
 type: finding
 title: "Crop-full sweep: new record on every head; phrase head is a tail specialist"
-aliases: [exp13, exp13-crop-full]
+aliases: [exp13, exp13-crop-full, exp14, exp14-fusion]
 created: 2026-09-01
 updated: 2026-09-02
 sources:
@@ -114,6 +114,35 @@ composition MLP as additional inputs (49 primitives + 135 phrase compositions + 
 feature = 1208-d), letting the MLP learn where to trust the language prior. The 37/49
 raw-head tail dominance plus the discard-by-construction analysis is the direct
 evidence.
+
+## Exp14 result (2026-09-02): fusion takes the tail crown at every cutoff
+
+**Ledger name: Exp14.** Ran same-day as designed: `crop_full/train_comp_mlp_fusion.py`
+(four throwaway fold heads, flat + phrase per fold, same video-level 2-fold OOF, same
+focal/alphas/seed/10-epoch recipe as the record MLP; only variable = the extra 135
+phrase composition inputs), evaluated via `eval_comb.py --phrase-ckpt` (fusion
+assembly asserts in_dim 1208 and checkpoint lineage). Artifacts:
+`comp_mlp_fusion_crop_full.pt`, `results_crop_full_fusion_mlp.json`,
+`chain_fusion.log`.
+
+| config | action | loc | duplex | triplet (86) | tail z=0 (47) | z=-0.5 (28) | z=-1 (16) |
+|---|---|---|---|---|---|---|---|
+| record flat+MLP | 18.99 | 22.31 | **17.94** | **11.13** | 5.72 | 4.25 | 2.04 |
+| phrase raw | 18.09 | 19.38 | 15.16 | 8.94 | 5.71 | 4.63 | 1.65 |
+| **exp14 fusion** | 18.99 | 22.31 | 17.76 | 10.98 | **5.99** | **4.73** | **2.59** |
+
+- Action/loc bit-identical to the record by construction (MLP touches only
+  composition columns) — sanity confirmed.
+- **Best tail at every cutoff, beating both parents**: +0.27 over the record at z=0,
+  +0.48 at z=-0.5 (also beating the phrase head's own 4.63), +0.55 (+27% relative)
+  on the 16 rarest. The MLP composes cosine evidence with features better than
+  either source alone; the discard-by-construction defect is fixed.
+- **Dose-response strengthened**: fusion's edge over the record grows monotonically
+  with rarity — third independent data point for language-helps-where-data-starves.
+- **Cost**: -0.18 duplex, -0.15 triplet on the 86-class averages. The record row
+  keeps the overall crown; the fusion is the long-tail configuration. Given the
+  thesis point is long-tail accuracy, exp14 is the headline candidate with the
+  record as the averages-optimized ablation.
 
 ## Provenance
 
