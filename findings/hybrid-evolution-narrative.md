@@ -218,6 +218,36 @@ generated from `gen_paper_stages.py` / `gen_paper_yolo.py` except the
   no text on any figure renders more than one size below box text
   (Brandon 2026-09-02, after small labels blurred on projected slides).
 
+### The figures
+
+**Stage 0, the inherited machine — 3D-RetinaNet architecture (Brandon's canonical layout):**
+
+![3D-RetinaNet baseline architecture](figures/evolution-paper_stage0_retinanet.png)
+
+**Stage 0's twin — YOLOv8x replicated baseline, same treatment:**
+
+![YOLOv8x replicated baseline architecture](figures/evolution-paper_stage0_yolov8x.png)
+
+**Stage 0 pt2 — the baseline on the stage scaffold; the empty top row is where YOLO lands:**
+
+![Stage 0 pt2, baseline on the stage scaffold](figures/evolution-paper_stage0_pt2.png)
+
+**Stage 1 — YOLO boxes, scores copied from 3D-RetinaNet by IoU:**
+
+![Stage 1, YOLO boxes with transferred scores](figures/evolution-paper_stage1_transfer.png)
+
+**Stage 2 — RoIAlign reads the frozen P3 map at every YOLO box; one trained linear head:**
+
+![Stage 2, RoIAlign features and trained head](figures/evolution-paper_stage2_roialign.png)
+
+**Stage 3 — the stage 2 head freezes; a trained composition MLP replaces duplex + triplet:**
+
+![Stage 3, stacked composition MLP](figures/evolution-paper_stage3_compmlp.png)
+
+**Stage 4 — InternVideo2 crops, language as classifier weights; 3D-RetinaNet fully replaced:**
+
+![Stage 4, contrastive phrase head on crop features](figures/evolution-paper_stage4_phrase.png)
+
 **Caption precision (Brandon 2026-09-02).** Stage 1's caption originally
 said "transferred heads are copied" — wrong on both counts: the *heads*
 never move (their *scores* are copied), and it never named the source

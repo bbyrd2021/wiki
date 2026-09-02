@@ -724,3 +724,9 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION â€
 - Pages updated: 2 (`findings/hybrid-evolution-narrative.md`, `.claude/skills/drawio-diagram/SKILL.md`)
 - Source: ~/Downloads/evolution_diagrams/ (gen_paper_stages.py)
 - Summary: Set grows to seven with paper_stage0_pt2, the baseline on the stage scaffold whose empty top row makes stage 1's YOLO arrival read as a diff; its caption records the corrected lifetime claim (stages 1 to 3 keep 3D-RetinaNet frozen, stage 4 replaces it, Brandon's catch). All seven re-set to a 13pt font floor after small labels blurred on projected slides; floor codified in skill rule 16c.
+
+## [2026-09-02] UPDATE â€” Embed the seven evolution figures in the narrative page
+- Pages updated: 1 (`findings/hybrid-evolution-narrative.md`)
+- Files added: 7 (`findings/figures/evolution-paper_stage*.png`, 2x white-background wiki renders, 1.6MB total)
+- Source: ~/Downloads/evolution_diagrams/*.drawio
+- Summary: The figure-set section now shows the actual figures in deck order (two baselines, pt2 bridge, stages 1-4) instead of describing them. Wiki copies are white-background 2x exports so they survive Obsidian dark mode; the 4x transparent slide masters stay in Downloads.
