@@ -763,3 +763,9 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION â€
 - Pages updated: 1 (`index.md`)
 - Source: exp11/exp12 scripts read block-by-block
 - Summary: Annotated stage-by-stage code review for Brandon's defense prep: the shared conventions (184 layout, 840x600 box space, official evaluator), each stage's load-bearing blocks (matching loop, RoIAlign scaling, PhraseHead, OOF stacking, gate ordering, fusion assembly), and the cross-cutting traps (raw-vs-gated, register_buffer as frozen).
+
+## [2026-09-03] UPDATE â€” InternVideo2-S portrait joins the figure set
+- Pages updated: 1 (`findings/hybrid-evolution-narrative.md`)
+- Files added: 1 wiki render (+slide master in evolution_diagrams)
+- Source: HF cache config.json for OpenGVLab/InternVideo2_CLIP_S + cache_crop_feats_h200.py hook
+- Summary: Third machine portrait, all numbers from the cached model config (patch 14, tubelet 1, 8x256 tokens at dim 1024, 24 blocks/16 heads; MobileCLIP text tower 12 layers dim 512 context 77) with the honest tap distinction drawn: our features hook the last vision block (keyframe slice, 16x16 mean), bypassing the model's own attention-pool CLIP head.

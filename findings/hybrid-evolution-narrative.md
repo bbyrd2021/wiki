@@ -258,6 +258,10 @@ generated from `gen_paper_stages.py` / `gen_paper_yolo.py` except the
 
 ![YOLOv8x replicated baseline architecture](figures/evolution-paper_stage0_yolov8x.png)
 
+**The third machine — InternVideo2-S, the frozen substrate of stages 4-6:**
+
+![InternVideo2-S encoder portrait](figures/evolution-paper_stage0_internvideo2.png)
+
 **Stage 0 pt2 — the baseline on the stage scaffold; the empty top row is where YOLO lands:**
 
 ![Stage 0 pt2, baseline on the stage scaffold](figures/evolution-paper_stage0_pt2.png)
