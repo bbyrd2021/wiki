@@ -3,7 +3,7 @@ type: finding
 title: "Exp12 — The Phrase Head Works; Features Are the Lever"
 aliases: []
 created: 2026-08-27
-updated: 2026-09-01
+updated: 2026-09-03
 sources:
   - "ROAD_Reason/experiments/exp12_phrase_head/DESIGN.md"
 tags: [finding, exp12, contrastive, phrase-head, internvideo2, road-plusplus, f-map]
@@ -120,6 +120,42 @@ append the box's normalized coordinates [x, y, w, h] from the YOLO dump to the 1
 crop feature and retrain the heads (1028-d input). Hypothesis: recovers most of the
 1.05 location gap at near-zero cost, since it restores the positional information the
 crop destroyed. One variable, cached features only, no re-encoding.
+
+## Addendum 2026-09-03 — coordinate probe: position helps, but not where predicted
+
+The queued coordinate-append ablation ran at probe scale (the original train
+cache never persisted boxes — global-RNG rows, unreconstructable across
+preemption resumes — so 2/12 train shards were re-cached locally with a
+box-persisting cacher; 19,268 frames, 703K rows). Matched pair on identical
+rows, same recipe/seed: base `Linear(1024→184)` vs coord `Linear(1028→184)`
+with normalized `[cx, cy, w, h]` appended; full-val eval (36,716 frames).
+
+| head | action | loc | duplex | triplet |
+|---|---|---|---|---|
+| base (probe) | 15.93 | 18.56 | 13.15 | 6.75 |
+| coord (probe) | 16.89 | **18.32** | 13.76 | 6.99 |
+| delta | +0.95 | **−0.24** | +0.61 | +0.24 |
+
+**The ego-relative-position hypothesis is refuted on its own terms**: handing
+the head the box position did NOT recover location (−0.24; coords win only
+5/16 location classes). The classes that DID gain are the genuinely
+position-defined ones (LftParking +2.6, xing +2.5, IncomBusLane +2.0,
+BusStop +1.7), but the common lane classes gave it back — at probe scale the
+position prior looks like an overfit risk for the majority classes, not a fix.
+
+**The twist: position helped everywhere else** — action +0.95, duplex +0.61,
+triplet +0.24. Where a box sits in the frame is contextual evidence for what
+the agent is *doing* (crossing happens in particular places) even though it
+does not fix the location *labels*. Refined diagnosis: the crop location
+deficit is not "position features are missing" — it is more likely that
+location classes need scene context around the box (what lane markings and
+curbs are nearby), which neither crops nor four coordinates provide.
+
+Caveats and carry-forward: probe scale (1/6 train data) — the majority-class
+overfit could shrink with full data; the coord option rides along free in the
+1B re-cache campaign (the patched cacher now persists boxes in every future
+cache). Artifacts: `crop_full/train_head_coord.py`, `chain_coord.sh`,
+`results_crop_probe_coord{base,}.json`, `eval_comb.py --coords`.
 
 ## Related
 

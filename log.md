@@ -752,3 +752,8 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION â€
 - Files updated: 5 wiki renders (stages 3-6 re-synced, +paper_stage6_fusion)
 - Source: gen_paper_stages.py; two-round crucible (technical: zero refutations, every number re-derived independently incl. train-count recount; visual: no blockers)
 - Summary: paper_stage6_fusion draws exp14 as stage 5 plus the phrase-scorer branch feeding the concat (input 49+135+1024). Crucible fixes rippled set-wide: phrase scorer restyled as a scoring module with the fire+ice pairing defined in the legend, [n,49] on the primitive wire, InternVideo2 versioned as -S, scaled-cosine-plus-bias wording, pass-through illusion at the detections box broken.
+
+## [2026-09-03] UPDATE â€” Coordinate probe: position helps action, not location
+- Pages updated: 1 (`findings/exp12-phrase-head-attribution.md`)
+- Source: ROAD_Reason exp12_phrase_head/crop_full (probe re-cache with persisted boxes, train_head_coord.py, results_crop_probe_coord*.json)
+- Summary: The [x,y,w,h]-append ablation refutes the ego-relative-position hypothesis on its own terms: location drops 0.24 at probe scale (only genuinely position-defined classes gain) while action (+0.95), duplex (+0.61) and triplet (+0.24) all improve. Refined diagnosis: location classes need scene context, not coordinates. Blocker discovered and fixed along the way: caches never persisted boxes; the cacher now does, so the 1B campaign gets coordinates for free.
