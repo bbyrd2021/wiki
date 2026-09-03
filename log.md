@@ -757,3 +757,9 @@ Append-only record of all wiki operations. Format: `## [YYYY-MM-DD] OPERATION â€
 - Pages updated: 1 (`findings/exp12-phrase-head-attribution.md`)
 - Source: ROAD_Reason exp12_phrase_head/crop_full (probe re-cache with persisted boxes, train_head_coord.py, results_crop_probe_coord*.json)
 - Summary: The [x,y,w,h]-append ablation refutes the ego-relative-position hypothesis on its own terms: location drops 0.24 at probe scale (only genuinely position-defined classes gain) while action (+0.95), duplex (+0.61) and triplet (+0.24) all improve. Refined diagnosis: location classes need scene context, not coordinates. Blocker discovered and fixed along the way: caches never persisted boxes; the cacher now does, so the 1B campaign gets coordinates for free.
+
+## [2026-09-03] CREATE â€” Evolution code walkthrough (defense prep)
+- Pages created: 1 (`methods/evolution-code-walkthrough.md`)
+- Pages updated: 1 (`index.md`)
+- Source: exp11/exp12 scripts read block-by-block
+- Summary: Annotated stage-by-stage code review for Brandon's defense prep: the shared conventions (184 layout, 840x600 box space, official evaluator), each stage's load-bearing blocks (matching loop, RoIAlign scaling, PhraseHead, OOF stacking, gate ordering, fusion assembly), and the cross-cutting traps (raw-vs-gated, register_buffer as frozen).

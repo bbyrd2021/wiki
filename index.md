@@ -1,7 +1,7 @@
 ---
 type: index
-updated: 2026-09-01
-total_pages: 135
+updated: 2026-09-03
+total_pages: 136
 ---
 
 # Research Wiki — Index
@@ -184,6 +184,7 @@ All pages organized by category. One line per page: link + one-sentence summary.
 - [[findings/exp11-yolo-hybrid|Exp11 — YOLO + I3D Hybrids]] — full-candidate era: YOLOv8x 35.24 agent; RoIAlign hybrid beats same-rows baseline on 4/6 heads; constraints can't reach composed outputs through linear heads
 - [[findings/road-waymo-schedule-overtraining|ROAD-Waymo Schedule Over-Training]] — effective n = 600 scenes, not 115K frames; epoch-1 beats epoch-50 by 5.3 agent f-mAP
 - [[methods/stacked-composition-mlp|Stacked Composition MLP]] — Brandon's learned-composition head; completed the exp11 six-head sweep (duplex 15.52 / triplet 9.73); zero composed violations by construction
+- [[methods/evolution-code-walkthrough|Code Walkthrough — Evolution Pipeline]] — every load-bearing block from exp11/exp12 quoted and explained; defense-prep companion to the narrative
 - [[findings/exp12-phrase-head-attribution|Exp12 — Phrase Head Attribution]] — mechanism works (41/49 rare triplets), encoder is the bottleneck, combination ties the record; features are the lever
 - [[findings/hybrid-evolution-narrative|Hybrid Evolution Narrative]] — the four-stage story from baseline to sweep, inputs/outputs per stage; the Moradi-requested narrative
 - [[directions/thesis-proposal-fall-2026|Thesis Proposal (Fall 2026)]] — the proposal of record: attribution studies → hybrid platform → contrastive phrase head; gates and timeline
